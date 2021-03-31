@@ -3,4 +3,9 @@
     <string name="new_alarm">New Alarm</string>
     <string name="new_proximity_reminder">New Proximity Reminder</string>
     <string name="new_geofenced_reminder">New Geofenced Reminder</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="alarm_title">Alarm Title</string>
+    <string name="get_ready_time">Select Estimated Get Ready Time</string>
+    <string name="enter_location">Enter Location</string>
 </resources>

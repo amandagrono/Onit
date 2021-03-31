@@ -6,10 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".SmartAlarmActivity">
 
-    <fragment
+    <FrameLayout
+        android:id="@+id/fullscreenMapLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/mapAPI"
-        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+        android:visibility="gone">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/smartAlarmLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/alarmTitleEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/alarm_title"
+            android:inputType="text"
+            android:autofillHints="@string/alarm_title">
+
+        </EditText>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/alarmTextView"
+                android:text="@string/get_ready_time"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"/>
+            <NumberPicker
+                android:id="@+id/numberPickerHours"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="50dp"
+                />
+            <NumberPicker
+                android:id="@+id/numberPickerMinutes"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="50dp"/>
+        </LinearLayout>
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <include
+            android:id="@+id/daypicker"
+            layout="@layout/daypicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/nextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+        </Button>
+
+
+
+
+
+
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

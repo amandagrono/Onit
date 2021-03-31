@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ToggleButton
+        android:id="@+id/sun_toggle"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/togglebutton_selector"
+        android:textStyle="bold"
+        android:textOff="Sn"
+        android:textOn="Sn"
+         />
+    <ToggleButton
+        android:id="@+id/mon_toggle"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@drawable/togglebutton_selector"
+        android:textStyle="bold"
+        android:textOff="M"
+        android:textOn="M"
+         />
+
+    <ToggleButton
+        android:id="@+id/tues_toggle"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@drawable/togglebutton_selector"
+        android:textStyle="bold"
+        android:textOff="T"
+        android:textOn="T"
+         />
+
+    <ToggleButton
+        android:id="@+id/wed_toggle"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@drawable/togglebutton_selector"
+        android:textStyle="bold"
+        android:textOff="W"
+        android:textOn="W"
+         />
+
+    <ToggleButton
+        android:id="@+id/thurs_toggle"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@drawable/togglebutton_selector"
+        android:textStyle="bold"
+        android:textOff="Th"
+        android:textOn="Th"
+         />
+
+    <ToggleButton
+        android:id="@+id/fri_toggle"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@drawable/togglebutton_selector"
+        android:textStyle="bold"
+        android:textOff="F"
+        android:textOn="F"
+         />
+
+    <ToggleButton
+        android:id="@+id/sat_toggle"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:background="@drawable/togglebutton_selector"
+        android:textStyle="bold"
+        android:textOff="S"
+        android:textOn="S"
+         />
+</LinearLayout>

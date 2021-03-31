@@ -6,12 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 
 import com.temple.onit.dataclasses.SmartAlarm;
+
+import java.time.LocalTime;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +34,16 @@ public class MainActivity extends AppCompatActivity {
 
         newAlarmButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SmartAlarmActivity.class);
+            launchSmartAlarm(intent);
+        });
+        newProximityReminderButton.setOnClickListener(v->{
+            Intent intent = new Intent(MainActivity.this, SmartAlarmActivity.class);
+            SmartAlarm smartAlarm = new SmartAlarm();
+            smartAlarm.setAlarmTitle("Work");
+            smartAlarm.setArrivalTime(9, 30);
+            smartAlarm.setGetReadyTime(8700000);
+            smartAlarm.setDays(new boolean[]{false, true, true, true, true, true, false});
+            intent.putExtra("alarm", smartAlarm);
             launchSmartAlarm(intent);
         });
 
