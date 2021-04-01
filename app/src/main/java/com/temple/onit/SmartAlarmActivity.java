@@ -62,7 +62,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
     int minutesInt = 0;
     int arrivalHour = 0;
     int arrivalMinute = 0;
-    private boolean[] daysArray;
+    private String daysArray;
     String alarmTitle = "";
 
     @Override
@@ -71,7 +71,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_smart_alarm);
 
 
-        daysArray = new boolean[]{false, false, false, false, false, false, false};
+        daysArray = "0000000";
 
         titleEditText = findViewById(R.id.alarmTitleEditText);
         hoursNumberPicker = findViewById(R.id.numberPickerHours);
@@ -104,7 +104,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
             Log.d("Smart Alarm Restore: ", "Field numberpicker minutesInt: " + minutesInt);
             Log.d("Smart Alarm Restore: ", "Field timepicker arrival hour: " + arrivalHour);
             Log.d("Smart Alarm Restore: ", "Field timepicker arrival minute: " + arrivalMinute);
-            Log.d("Smart Alarm Restore: ", "Field Days Array:  " + Arrays.toString(daysArray));
+            Log.d("Smart Alarm Restore: ", "Field Days Array:  " + daysArray);
 
 
 
@@ -196,13 +196,13 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
 
             }
         });
-        sunday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[0] = isChecked);
-        monday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[1] = isChecked);
-        tuesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[2] = isChecked);
-        wednesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[3] = isChecked);
-        thursday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[4] = isChecked);
-        friday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[5] = isChecked);
-        saturday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[6] = isChecked);
+        sunday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(0, isChecked));
+        monday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(1, isChecked));
+        tuesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(2, isChecked));
+        wednesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(3, isChecked));
+        thursday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(4, isChecked));
+        friday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(5, isChecked));
+        saturday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(6, isChecked));
 
     }
 
@@ -275,13 +275,13 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
 
         /**************************************************/
 
-        sunday.setChecked(daysArray[0]);
-        monday.setChecked(daysArray[1]);
-        tuesday.setChecked(daysArray[2]);
-        wednesday.setChecked(daysArray[3]);
-        thursday.setChecked(daysArray[4]);
-        friday.setChecked(daysArray[5]);
-        saturday.setChecked(daysArray[6]);
+        sunday.setChecked(toBoolean(daysArray.charAt(0)));
+        monday.setChecked(toBoolean(daysArray.charAt(1)));
+        tuesday.setChecked(toBoolean(daysArray.charAt(2)));
+        wednesday.setChecked(toBoolean(daysArray.charAt(3)));
+        thursday.setChecked(toBoolean(daysArray.charAt(4)));
+        friday.setChecked(toBoolean(daysArray.charAt(5)));
+        saturday.setChecked(toBoolean(daysArray.charAt(6)));
     }
 
     @Override
@@ -301,6 +301,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         location.setLatitude(latLng.latitude);
         smartAlarm.setDestinationLocation(location);
         calculateTransitTime();
+
     }
 
     public void calculateTransitTime(){
@@ -310,5 +311,19 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         long arrivalTimeInSeconds = (ServerManager.calculateArrivalTimeInMillis(Calendar.SUNDAY) + arrivalTimeOfDay);
 
         ServerManager.sendRequest(origin, destination, arrivalTimeInSeconds);
+    }
+
+    private char to0or1(boolean checked){
+         if(checked) return '1';
+         else return '0';
+    }
+    private boolean toBoolean(char zeroOr1){
+        if(zeroOr1 == '1') return true;
+        else return false;
+    }
+    private String newString(int index, boolean checked){
+        StringBuilder newString = new StringBuilder(daysArray);
+        newString.setCharAt(index, to0or1(checked));
+        return newString.toString();
     }
 }

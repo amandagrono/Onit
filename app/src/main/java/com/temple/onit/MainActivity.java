@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             smartAlarm.setAlarmTitle("Work");
             smartAlarm.setArrivalTime(9, 30);
             smartAlarm.setGetReadyTime(8700000);
-            smartAlarm.setDays(new boolean[]{false, true, true, true, true, true, false});
+            smartAlarm.setDays("0111110");
             intent.putExtra("alarm", smartAlarm);
             launchSmartAlarm(intent);
         });

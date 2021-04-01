@@ -18,6 +18,8 @@ public class ServerManager {
         String request = sb.toString();
         Log.d("Request URL", request);
 
+
+
     }
 
     public static long calculateArrivalTimeInMillis(int dow) {
