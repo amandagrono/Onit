@@ -8,4 +8,7 @@
     <string name="alarm_title">Alarm Title</string>
     <string name="get_ready_time">Select Estimated Get Ready Time</string>
     <string name="enter_location">Enter Location</string>
+    <string name="geofenced_reminder_title">Geofenced Reminder Title</string>
+    <string name="geofence_reminder_content">Geofence Reminder Content</string>
+    <string name="default_radius">Radius (Miles): 1</string>
 </resources>

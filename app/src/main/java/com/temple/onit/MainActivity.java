@@ -1,20 +1,13 @@
 package com.temple.onit;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Button;
 
+import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.dataclasses.SmartAlarm;
-
-import java.time.LocalTime;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("alarm", smartAlarm);
             launchSmartAlarm(intent);
         });
+        newGeofencedReminderButton.setOnClickListener(v->{
+            Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);
+            launchGeofencedReminder(intent);
+        });
 
     }
 
@@ -56,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void launchGeofencedReminder(Intent intent){
-
+        startActivity(intent);
     }
 
 

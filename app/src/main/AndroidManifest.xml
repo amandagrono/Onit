@@ -5,15 +5,25 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
+        android:name=".OnitApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Onit">
+        <activity android:name=".GeofencedReminder.NewGeofencedReminderActivity"></activity>
+
+        <receiver android:name=".GeofencedReminder.GeofenceBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"/>
+        <service android:name=".services.GeofenceTransitionsIntentService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
         <service
             android:name=".services.LocationService"
             android:enabled="true"
@@ -23,7 +33,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
-        <activity android:name=".GeofencedReminderActivity" />
+        <activity android:name=".GeofencedReminder.GeofencedReminderActivity" />
         <activity android:name=".ProximityReminderActivity" />
         <activity android:name=".SmartAlarmActivity" />
         <activity android:name=".MainActivity">

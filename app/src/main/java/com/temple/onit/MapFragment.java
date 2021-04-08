@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,8 +31,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap mapAPI;
     private Button button;
-    private MapFragmentInterface smartAlarmActivity;
+    private TextView textView;
+    private MapFragmentInterface parentActivity;
     private LatLng currentLatLng;
+    private int state = 0;
+    private String textViewText = "";
 
     public MapFragment() {
         // Required empty public constructor
@@ -39,10 +43,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public static MapFragment newInstance(String param1, String param2) {
+    public static MapFragment newInstance(int state) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
-
+        args.putInt("state", state);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,6 +54,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            state = getArguments().getInt("state");
+            switch (state){
+                case 0:
+                    textViewText = "Please Select Destination Location";
+                    break;
+                case 1:
+                    textViewText = "Please Select Starting Location";
+                    break;
+                case 2:
+                    textViewText = "Please select reminder location";
+            }
+        }
 
 
 
@@ -75,9 +92,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
             button.setOnClickListener(v -> {
                 if(!(currentLatLng == null)){
-                    smartAlarmActivity.saveLocation(currentLatLng);
+                    parentActivity.saveLocation(currentLatLng, state);
                 }
             });
+            textView = view.findViewById(R.id.mapTextView);
+            textView.setText(textViewText);
         }
     }
 
@@ -85,7 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if(context instanceof MapFragmentInterface){
-            smartAlarmActivity = (MapFragmentInterface) context;
+            parentActivity = (MapFragmentInterface) context;
         }
         else{
             throw new ClassCastException("Must Implement MapFragmentInterface");
@@ -113,6 +132,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
     interface MapFragmentInterface{
-        void saveLocation(LatLng latLng);
+        void saveLocation(LatLng latLng, int state);
     }
 }

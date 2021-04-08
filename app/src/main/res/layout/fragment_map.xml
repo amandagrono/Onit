@@ -6,7 +6,12 @@
     tools:context=".MapFragment"
     android:orientation="vertical">
 
-
+    <TextView
+        android:id="@+id/mapTextView"
+        android:text="Please Select Destination Location"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <EditText
         android:inputType="text"
         android:autofillHints="Enter Location"
