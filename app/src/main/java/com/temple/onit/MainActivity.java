@@ -1,20 +1,18 @@
 package com.temple.onit;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
-import android.location.Location;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Button;
 
+import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.dataclasses.SmartAlarm;
-
-import java.time.LocalTime;
+import com.temple.onit.services.LocationService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,10 +40,19 @@ public class MainActivity extends AppCompatActivity {
             smartAlarm.setAlarmTitle("Work");
             smartAlarm.setArrivalTime(9, 30);
             smartAlarm.setGetReadyTime(8700000);
-            smartAlarm.setDays(new boolean[]{false, true, true, true, true, true, false});
+            smartAlarm.setDays("0111110");
             intent.putExtra("alarm", smartAlarm);
             launchSmartAlarm(intent);
         });
+        newGeofencedReminderButton.setOnClickListener(v->{
+            Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);
+            launchGeofencedReminder(intent);
+        });
+
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        startForegroundService(serviceIntent);
+
+
 
     }
 
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void launchGeofencedReminder(Intent intent){
-
+        startActivity(intent);
     }
 
 

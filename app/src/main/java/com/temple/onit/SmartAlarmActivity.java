@@ -27,13 +27,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonObject;
 import com.temple.onit.dataclasses.SmartAlarm;
 
 import java.util.Arrays;
 import java.util.Calendar;
 
 
-public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyCallback, MapFragment.MapFragmentInterface {
+public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyCallback, MapFragment.MapFragmentInterface, ServerManager.ResponseListener {
 
     private final String[] hoursArray = new String[24];
     private final String[] minutesArray = new String[60];
@@ -42,6 +43,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
 
     GoogleMap mapAPI;
     MapFragment mapFragment;
+    MapFragment mapFragment2;
     SmartAlarm smartAlarm;
 
     EditText titleEditText;
@@ -62,7 +64,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
     int minutesInt = 0;
     int arrivalHour = 0;
     int arrivalMinute = 0;
-    private boolean[] daysArray;
+    private String daysArray;
     String alarmTitle = "";
 
     @Override
@@ -71,7 +73,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         setContentView(R.layout.activity_smart_alarm);
 
 
-        daysArray = new boolean[]{false, false, false, false, false, false, false};
+        daysArray = "0000000";
 
         titleEditText = findViewById(R.id.alarmTitleEditText);
         hoursNumberPicker = findViewById(R.id.numberPickerHours);
@@ -104,7 +106,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
             Log.d("Smart Alarm Restore: ", "Field numberpicker minutesInt: " + minutesInt);
             Log.d("Smart Alarm Restore: ", "Field timepicker arrival hour: " + arrivalHour);
             Log.d("Smart Alarm Restore: ", "Field timepicker arrival minute: " + arrivalMinute);
-            Log.d("Smart Alarm Restore: ", "Field Days Array:  " + Arrays.toString(daysArray));
+            Log.d("Smart Alarm Restore: ", "Field Days Array:  " + daysArray);
 
 
 
@@ -120,11 +122,10 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         resetViews();
 
         Log.d("Alarm" , smartAlarm.toString());
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        mapFragment = new MapFragment();
-        fragmentTransaction.add(R.id.fullscreenMapLayout, mapFragment);
-        fragmentTransaction.addToBackStack(null).commit();
+
+        mapFragment = MapFragment.newInstance(0);
+        mapFragment2 = MapFragment.newInstance(1);
+
     }
 
     private void listeners(){
@@ -191,18 +192,20 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
 
                 View mapView = findViewById(R.id.fullscreenMapLayout);
                 mapView.setVisibility(View.VISIBLE);
-
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.add(R.id.fullscreenMapLayout, mapFragment).commit();
 
 
             }
         });
-        sunday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[0] = isChecked);
-        monday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[1] = isChecked);
-        tuesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[2] = isChecked);
-        wednesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[3] = isChecked);
-        thursday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[4] = isChecked);
-        friday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[5] = isChecked);
-        saturday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray[6] = isChecked);
+        sunday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(0, isChecked));
+        monday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(1, isChecked));
+        tuesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(2, isChecked));
+        wednesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(3, isChecked));
+        thursday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(4, isChecked));
+        friday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(5, isChecked));
+        saturday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(6, isChecked));
 
     }
 
@@ -275,40 +278,101 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
 
         /**************************************************/
 
-        sunday.setChecked(daysArray[0]);
-        monday.setChecked(daysArray[1]);
-        tuesday.setChecked(daysArray[2]);
-        wednesday.setChecked(daysArray[3]);
-        thursday.setChecked(daysArray[4]);
-        friday.setChecked(daysArray[5]);
-        saturday.setChecked(daysArray[6]);
+        sunday.setChecked(toBoolean(daysArray.charAt(0)));
+        monday.setChecked(toBoolean(daysArray.charAt(1)));
+        tuesday.setChecked(toBoolean(daysArray.charAt(2)));
+        wednesday.setChecked(toBoolean(daysArray.charAt(3)));
+        thursday.setChecked(toBoolean(daysArray.charAt(4)));
+        friday.setChecked(toBoolean(daysArray.charAt(5)));
+        saturday.setChecked(toBoolean(daysArray.charAt(6)));
     }
 
     @Override
-    public void saveLocation(LatLng latLng) {
+    public void saveLocation(LatLng latLng, int state) {
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.remove(mapFragment).commit();
+        if(state == 0) { //called when user is saving destination location.
 
-        View linearLayout = findViewById(R.id.smartAlarmLinearLayout);
-        linearLayout.setVisibility(View.VISIBLE);
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.remove(mapFragment);
+            ft.add(R.id.fullscreenMapLayout, mapFragment2)
+                    .commit();
+            Location location = new Location("");
+            location.setLongitude(latLng.longitude);
+            location.setLatitude(latLng.latitude);
+            smartAlarm.setDestinationLocation(location);
+
+        }
+        else{ // State == 1 Called when user is saving starting location.
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.remove(mapFragment).remove(mapFragment2).commit();
+
+            View linearLayout = findViewById(R.id.smartAlarmLinearLayout);
+            linearLayout.setVisibility(View.VISIBLE);
+            View mapLayout = findViewById(R.id.fullscreenMapLayout);
+            mapLayout.setVisibility(View.GONE);
+
+            Location location = new Location("");
+            location.setLongitude(latLng.longitude);
+            location.setLatitude(latLng.latitude);
+            smartAlarm.setLastKnownLocation(location);
+            calculateTransitTime();
+            mapFragment = MapFragment.newInstance(0);
+            mapFragment2 = MapFragment.newInstance(1);
+        }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d("OnBackPressed", "OnBackPressed Called");
+        View layout = findViewById(R.id.smartAlarmLinearLayout);
         View mapLayout = findViewById(R.id.fullscreenMapLayout);
-        mapLayout.setVisibility(View.GONE);
-
-        Location location = new Location("");
-        location.setLongitude(latLng.longitude);
-        location.setLatitude(latLng.latitude);
-        smartAlarm.setDestinationLocation(location);
-        calculateTransitTime();
+        if(layout.getVisibility() == View.GONE && mapFragment.isVisible()){
+            layout.setVisibility(View.VISIBLE);
+            mapLayout.setVisibility(View.GONE);
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.remove(mapFragment).remove(mapFragment2).commit();
+        }
+        else if(layout.getVisibility() == View.GONE && mapFragment2.isVisible()){
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(mapLayout.getId(), mapFragment).commit();
+            mapFragment2 = MapFragment.newInstance(1);
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 
     public void calculateTransitTime(){
-        LatLng origin = new LatLng(40.238676,-74.660680);
+        LatLng origin = new LatLng(smartAlarm.getLastKnownLocation().getLatitude(), smartAlarm.getLastKnownLocation().getLongitude());
         LatLng destination = new LatLng(smartAlarm.getDestinationLocation().getLatitude(), smartAlarm.getDestinationLocation().getLongitude());
         long arrivalTimeOfDay = calculateMillis(smartAlarm.getArrivalHour(), smartAlarm.getArrivalMinute())/1000;
         long arrivalTimeInSeconds = (ServerManager.calculateArrivalTimeInMillis(Calendar.SUNDAY) + arrivalTimeOfDay);
 
-        ServerManager.sendRequest(origin, destination, arrivalTimeInSeconds);
+        ServerManager.sendRequest(origin, destination, arrivalTimeInSeconds, this);
+    }
+
+    private char to0or1(boolean checked){
+         if(checked) return '1';
+         else return '0';
+    }
+    private boolean toBoolean(char zeroOr1){
+        if(zeroOr1 == '1') return true;
+        else return false;
+    }
+    private String newString(int index, boolean checked){
+        StringBuilder newString = new StringBuilder(daysArray);
+        newString.setCharAt(index, to0or1(checked));
+        return newString.toString();
+    }
+
+    @Override
+    public void gotResponse(String jsonObject) {
+        smartAlarm.setTransitTime(ServerManager.parseDirectionsJson(jsonObject));
+        Log.d("Smart Alarm W Transit Time", smartAlarm.toString());
     }
 }

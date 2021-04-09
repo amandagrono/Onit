@@ -21,7 +21,7 @@ public class SmartAlarm implements Parcelable {
     private long getReadyTime;
     private long transitTime;
     private String alarmTitle;
-    private boolean[] days;
+    private String days;
 
     public SmartAlarm(){
         destinationLocation = new Location("new location provider");
@@ -32,7 +32,7 @@ public class SmartAlarm implements Parcelable {
         arrivalMinute = 0;
         getReadyTime = 0;
         transitTime = 0;
-        days = new boolean[]{false, false, false, false, false, false, false};
+        days = "0000000";
         alarmTitle = null;
     }
 
@@ -44,7 +44,7 @@ public class SmartAlarm implements Parcelable {
         arrivalMinute = in.readInt();
         getReadyTime = in.readLong();
         transitTime = in.readLong();
-        in.readBooleanArray(days);
+        days = in.readString();
         alarmTitle = in.readString();
 
     }
@@ -80,7 +80,7 @@ public class SmartAlarm implements Parcelable {
     public void setAlarmTitle(String title){
         this.alarmTitle = title;
     }
-    public void setDays(boolean[] days){this.days = days.clone();}
+    public void setDays(String days){this.days = days;}
 
     public Location getDestinationLocation(){
         return destinationLocation;
@@ -99,29 +99,29 @@ public class SmartAlarm implements Parcelable {
     public String getAlarmTitle(){
         return alarmTitle;
     }
-    public boolean[] getDays(){ return days; }
+    public String getDays(){ return days; }
 
     public String toString(){
         String daysEnabled = "";
-        if(days[0]){
+        if(days.charAt(0) == '1'){
             daysEnabled = daysEnabled + "Sunday, ";
         }
-        if(days[1]){
+        if(days.charAt(1) == '1'){
             daysEnabled = daysEnabled + "Monday, ";
         }
-        if(days[2]){
+        if(days.charAt(2)=='1'){
             daysEnabled = daysEnabled + "Tuesday, ";
         }
-        if(days[3]){
+        if(days.charAt(3) == '1'){
             daysEnabled = daysEnabled + "Wednesday, ";
         }
-        if(days[4]){
+        if(days.charAt(4) == '1'){
             daysEnabled = daysEnabled + "Thursday, ";
         }
-        if(days[5]){
+        if(days.charAt(5) == '1'){
             daysEnabled = daysEnabled + "Friday, ";
         }
-        if(days[6]){
+        if(days.charAt(6) == '1'){
             daysEnabled = daysEnabled + "Saturday, ";
         }
         return "Alarm Title: " + alarmTitle + "\n" +
@@ -151,7 +151,7 @@ public class SmartAlarm implements Parcelable {
         dest.writeInt(arrivalMinute);
         dest.writeLong(getReadyTime);
         dest.writeLong(transitTime);
-        dest.writeBooleanArray(days);
+        dest.writeString(days);
         dest.writeString(alarmTitle);
 
     }
