@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SmartAlarmActivity">
+    tools:context=".Alarms.SmartAlarmActivity">
 
     <FrameLayout
         android:id="@+id/fullscreenMapLayout"
@@ -49,6 +49,19 @@
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
                 android:layout_height="50dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:text="Set Recurring?"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:id="@+id/recurringCheckbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
         <TimePicker
             android:id="@+id/timePicker"
@@ -56,6 +69,7 @@
             android:layout_height="wrap_content"/>
         <include
             android:id="@+id/daypicker"
+            android:visibility="gone"
             layout="@layout/daypicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
