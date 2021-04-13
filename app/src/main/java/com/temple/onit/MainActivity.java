@@ -2,17 +2,12 @@ package com.temple.onit;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Button;
 
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.dataclasses.SmartAlarm;
-import com.temple.onit.services.LocationService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,11 +43,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);
             launchGeofencedReminder(intent);
         });
-
-        Intent serviceIntent = new Intent(this, LocationService.class);
-        startForegroundService(serviceIntent);
-
-
 
     }
 
