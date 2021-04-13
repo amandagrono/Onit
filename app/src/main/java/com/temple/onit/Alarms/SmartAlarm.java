@@ -149,57 +149,7 @@ public class SmartAlarm implements Parcelable {
                 " Transit Time: " + transitTime + "\nDays Enabled: " + daysEnabled;
     }
 
-    public long updateTransitTime(){
-        return transitTime;
-    }
 
-    public void schedule(Context context){
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-        Intent intent = new Intent(context, AlarmBroadcastReceiver.class);
-        intent.putExtra(Constants.RECURRING, recurring);
-        intent.putExtra(Constants.SUNDAY, enabledOnDay(0));
-        intent.putExtra(Constants.MONDAY, enabledOnDay(1));
-        intent.putExtra(Constants.TUESDAY, enabledOnDay(2));
-        intent.putExtra(Constants.WEDNESDAY, enabledOnDay(3));
-        intent.putExtra(Constants.THURSDAY, enabledOnDay(4));
-        intent.putExtra(Constants.FRIDAY, enabledOnDay(5));
-        intent.putExtra(Constants.SATURDAY, enabledOnDay(6));
-
-        intent.putExtra(Constants.ALARM_TITLE, alarmTitle);
-
-        intent.putExtra(Constants.ARRIVAL_HOUR, arrivalHour);
-        intent.putExtra(Constants.ARRIVAL_MINUTE, arrivalMinute);
-        intent.putExtra(Constants.LEAVE_HOUR, getLeaveHour());
-        intent.putExtra(Constants.LEAVE_MINUTE, getLeaveMinute());
-        intent.putExtra(Constants.DESTINATION_LATITUDE, destinationLocation.getLatitude());
-        intent.putExtra(Constants.DESTINATION_LONGITUDE, destinationLocation.getLongitude());
-
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, alarmId, intent, 0);
-
-        Calendar calendar = setWakeupTime();
-
-        if(calendar.getTimeInMillis() <= System.currentTimeMillis()){
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
-        }
-        if(!recurring){
-            String toastText = null;
-
-            toastText = "Alarm Scheduled";
-
-            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
-
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
-        }
-        else{
-            String toastText = "Set Repeating alarm for " + getDaysEnabled() + ".";
-            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
-
-            final long RUN_DAILY = 24*60*60*1000;
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), RUN_DAILY, alarmPendingIntent);
-        }
-        this.enabled = true;
-    }
     public boolean isEnabled(){
         return enabled;
     }
@@ -249,17 +199,6 @@ public class SmartAlarm implements Parcelable {
         return returnString.substring(0, returnString.length() - 2);
     }
 
-    public void cancelAlarm(Context context){
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmBroadcastReceiver.class);
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, alarmId, intent, 0);
-        alarmManager.cancel(alarmPendingIntent);
-        this.enabled = false;
-
-        String toastText = "Alarm Cancelled";
-        Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
-        Log.d("Cancel Alarm", toString());
-    }
 
     @Override
     public int describeContents() {

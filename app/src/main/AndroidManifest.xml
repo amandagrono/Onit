@@ -18,18 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Onit">
-        <service
-            android:name=".Alarms.RescheduleAlarmService"
-            android:enabled="true"
-            android:exported="true"></service>
 
-        <activity android:name=".Alarms.AlarmListActivity" />
-        <activity android:name=".Alarms.AlarmViewerActivity" />
-
-        <service
-            android:name=".Alarms.AlarmService"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity android:name=".GeofencedReminder.NewGeofencedReminderActivity" />
 
@@ -37,11 +26,6 @@
             android:name=".GeofencedReminder.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
-        <receiver android:name=".Alarms.AlarmBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <service
             android:name=".services.GeofenceTransitionsIntentService"
