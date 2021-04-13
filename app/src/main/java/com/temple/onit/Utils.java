@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
-import com.temple.onit.GeofencedReminder.GeofencedReminder;
+import com.temple.onit.dataclasses.GeofencedReminder;
 
 public final class Utils {
     private static final String NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel";

@@ -20,9 +20,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.Utils;
+import com.temple.onit.dataclasses.GeofencedReminder;
 
 import java.util.Objects;
 

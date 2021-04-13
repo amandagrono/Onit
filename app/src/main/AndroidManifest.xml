@@ -6,9 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:name=".OnitApplication"
@@ -18,46 +16,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Onit">
-        <service
-            android:name=".Alarms.RescheduleAlarmService"
+        <activity android:name=".GeofencedReminder.NewGeofencedReminderActivity"></activity>
+
+        <receiver android:name=".GeofencedReminder.GeofenceBroadcastReceiver"
             android:enabled="true"
-            android:exported="true"></service>
-
-        <activity android:name=".Alarms.AlarmListActivity" />
-        <activity android:name=".Alarms.AlarmViewerActivity" />
-
-        <service
-            android:name=".Alarms.AlarmService"
-            android:enabled="true"
-            android:exported="true" />
-
-        <activity android:name=".GeofencedReminder.NewGeofencedReminderActivity" />
-
-        <receiver
-            android:name=".GeofencedReminder.GeofenceBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
-        <receiver android:name=".Alarms.AlarmBroadcastReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name=".services.GeofenceTransitionsIntentService"
+            android:exported="true"/>
+        <service android:name=".services.GeofenceTransitionsIntentService"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
         <service
             android:name=".services.LocationService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".services.MyFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -65,7 +36,7 @@
 
         <activity android:name=".GeofencedReminder.GeofencedReminderActivity" />
         <activity android:name=".ProximityReminderActivity" />
-        <activity android:name=".Alarms.SmartAlarmActivity" />
+        <activity android:name=".SmartAlarmActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

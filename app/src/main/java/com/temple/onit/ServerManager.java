@@ -92,7 +92,7 @@ public class ServerManager {
         return date.getTimeInMillis()/1000;
     }
 
-    public interface ResponseListener{
+    interface ResponseListener{
         public void gotResponse(String jsonObject);
     }
 

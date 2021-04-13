@@ -13,7 +13,7 @@ import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.maps.model.LatLng;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.Utils;
-import com.temple.onit.GeofencedReminder.GeofencedReminder;
+import com.temple.onit.dataclasses.GeofencedReminder;
 
 import java.util.List;
 

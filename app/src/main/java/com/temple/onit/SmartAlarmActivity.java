@@ -1,17 +1,18 @@
-package com.temple.onit.Alarms;
+package com.temple.onit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -23,13 +24,13 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.temple.onit.Constants;
-import com.temple.onit.MapFragment;
-import com.temple.onit.R;
-import com.temple.onit.ServerManager;
+import com.google.gson.JsonObject;
+import com.temple.onit.dataclasses.SmartAlarm;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 
@@ -37,7 +38,8 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
 
     private final String[] hoursArray = new String[24];
     private final String[] minutesArray = new String[60];
-
+    private static final int HOUR_IN_MILLIS = 3600000;
+    private static final int MINUTE_IN_MILLIS = 60000;
 
     GoogleMap mapAPI;
     MapFragment mapFragment;
@@ -49,10 +51,13 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
     NumberPicker minutesNumberPicker;
     TimePicker timePicker;
     Button nextButton;
-    ToggleButton sunday, monday, tuesday, wednesday, thursday, friday, saturday;
-    CheckBox checkBox;
-    View dayPicker;
-
+    ToggleButton sunday;
+    ToggleButton monday;
+    ToggleButton tuesday;
+    ToggleButton wednesday;
+    ToggleButton thursday;
+    ToggleButton friday;
+    ToggleButton saturday;
 
     /** Alarm Values To Be Saved **/
     int hoursInt = 0;
@@ -61,7 +66,6 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
     int arrivalMinute = 0;
     private String daysArray;
     String alarmTitle = "";
-    boolean recurring = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +80,6 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         minutesNumberPicker = findViewById(R.id.numberPickerMinutes);
         timePicker = findViewById(R.id.timePicker);
         nextButton = findViewById(R.id.nextButton);
-        dayPicker = findViewById(R.id.daypicker);
 
         //Toggle Buttons
         sunday = findViewById(R.id.sun_toggle);
@@ -87,21 +90,16 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         friday = findViewById(R.id.fri_toggle);
         saturday = findViewById(R.id.sat_toggle);
 
-        //CheckBox
-        checkBox = findViewById(R.id.recurringCheckbox);
-
         //When user wants to edit alarm.
         if(getIntent().hasExtra("alarm")){
 
             smartAlarm = (SmartAlarm) getIntent().getParcelableExtra("alarm");
-
             daysArray = smartAlarm.getDays();
             hoursInt = calculateHours(smartAlarm.getGetReadyTime());
             minutesInt = calculateMinutes(smartAlarm.getGetReadyTime(), hoursInt);
             arrivalHour = smartAlarm.getArrivalHour();
             arrivalMinute = smartAlarm.getArrivalMinute();
             alarmTitle = smartAlarm.getAlarmTitle();
-            recurring = smartAlarm.getRecurring();
             Log.d("Smart Alarm Restore: ", "Smart Alarm Object: \n_______________________\n" + smartAlarm.toString());
             Log.d("Smart Alarm Restore: ", "Field Alarm Title: " + alarmTitle);
             Log.d("Smart Alarm Restore: ", "Field numberpicker hoursInt: " + hoursInt);
@@ -109,7 +107,6 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
             Log.d("Smart Alarm Restore: ", "Field timepicker arrival hour: " + arrivalHour);
             Log.d("Smart Alarm Restore: ", "Field timepicker arrival minute: " + arrivalMinute);
             Log.d("Smart Alarm Restore: ", "Field Days Array:  " + daysArray);
-            Log.d("Smart Alarm Restore: ", "Field recurring: " + recurring);
 
 
 
@@ -209,20 +206,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         thursday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(4, isChecked));
         friday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(5, isChecked));
         saturday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(6, isChecked));
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            recurring = isChecked;
-            if(recurring) dayPicker.setVisibility(View.VISIBLE);
-            if(!recurring){
-                sunday.setChecked(false);
-                monday.setChecked(false);
-                tuesday.setChecked(false);
-                wednesday.setChecked(false);
-                thursday.setChecked(false);
-                friday.setChecked(false);
-                saturday.setChecked(false);
-                dayPicker.setVisibility(View.GONE);
-            }
-        });
+
     }
 
     @Override
@@ -262,19 +246,19 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
     }
     private int calculateHours(long millis){
         int hours = 0;
-        while(millis > Constants.HOUR_IN_MILLIS){
-            millis = millis - Constants.HOUR_IN_MILLIS;
+        while(millis > HOUR_IN_MILLIS){
+            millis = millis - HOUR_IN_MILLIS;
 
             hours++;
         }
         return hours;
     }
     private int calculateMinutes(long millis, long hours){
-        millis = millis % (hours*Constants.HOUR_IN_MILLIS);
+        millis = millis % (hours*HOUR_IN_MILLIS);
         int minutes = 0;
 
-        while(millis >= Constants.MINUTE_IN_MILLIS){
-            millis = millis - Constants.MINUTE_IN_MILLIS;
+        while(millis >= MINUTE_IN_MILLIS){
+            millis = millis - MINUTE_IN_MILLIS;
             minutes++;
         }
         return minutes;
