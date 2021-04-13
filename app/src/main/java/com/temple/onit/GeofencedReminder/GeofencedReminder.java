@@ -1,12 +1,13 @@
-package com.temple.onit.dataclasses;
+package com.temple.onit.GeofencedReminder;
 
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.temple.onit.dataclasses.Reminder;
 
 import java.time.LocalTime;
 
-public class GeofencedReminder extends Reminder{
+public class GeofencedReminder extends Reminder {
     private LatLng location;
 
     public GeofencedReminder(LatLng latLng, String title, String content, double radius){

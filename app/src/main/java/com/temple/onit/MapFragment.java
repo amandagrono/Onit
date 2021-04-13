@@ -131,7 +131,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-    interface MapFragmentInterface{
+    public interface MapFragmentInterface{
         void saveLocation(LatLng latLng, int state);
     }
 }
