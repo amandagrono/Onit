@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -281,6 +282,14 @@ public class SmartAlarm{
         Toast.makeText(context, "Canceled Alarm", Toast.LENGTH_LONG).show();
     }
 
-
-
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj == null){
+            return false;
+        }
+        if(!(obj instanceof SmartAlarm)){
+            return false;
+        }
+        return ((SmartAlarm) obj).alarmId == this.alarmId;
+    }
 }

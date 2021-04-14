@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -35,6 +36,10 @@ public class AlarmViewActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_view);
 
+        dismissButton = findViewById(R.id.alarm_view_dismiss_button);
+        alarmTitleTextView = findViewById(R.id.alarm_title_text_view);
+        alarmTextTextView = findViewById(R.id.alarm_text_text_view);
+
         dismissButton.setOnClickListener(v -> {
             Intent intentService = new Intent(getApplicationContext(), SmartAlarmService.class);
             getApplicationContext().stopService(intentService);
@@ -50,6 +55,8 @@ public class AlarmViewActivity extends AppCompatActivity implements OnMapReadyCa
 
         destinationLatitude = getIntent().getDoubleExtra(Constants.DESTINATION_LATITUDE, 0);
         destinationLongitude = getIntent().getDoubleExtra(Constants.DESTINATION_LONGITUDE, 0);
+
+        Log.d("Alarm View", "Arrival Time: " + getIntent().getIntExtra(Constants.ARRIVAL_HOUR, 0) + ":" + getIntent().getIntExtra(Constants.ARRIVAL_MINUTE, 0) + "Destination Latitude: " + getIntent().getDoubleExtra(Constants.DESTINATION_LATITUDE, 0) + " Destination Longitude: " + getIntent().getDoubleExtra(Constants.DESTINATION_LONGITUDE, 0));
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.alarm_view_map);
         if(mapFragment != null){
