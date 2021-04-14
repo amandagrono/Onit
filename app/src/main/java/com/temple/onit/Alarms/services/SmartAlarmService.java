@@ -38,7 +38,7 @@ public class SmartAlarmService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         Intent notificationIntent = new Intent(this, AlarmViewActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
 
        String alarmTitle = intent.getStringExtra(Constants.ALARM_TITLE);
        int leaveHour = intent.getIntExtra(Constants.LEAVE_HOUR, 0);
@@ -48,6 +48,10 @@ public class SmartAlarmService extends Service {
        double destinationLongitude = intent.getDoubleExtra(Constants.DESTINATION_LONGITUDE, 0);
        double destinationLatitude = intent.getDoubleExtra(Constants.DESTINATION_LATITUDE, 0);
 
+       Log.d("Intent Alarm View","Alarm Service: " + alarmTitle + " leave hour: " + leaveHour + " leave minute: " + leaveMinute
+       + "arrival hour: " + arrivalHour  + " arrival minute: " + arrivalMinute +
+               " destination longitude: " + destinationLongitude + " destination latitude: " + destinationLatitude);
+
        notificationIntent.putExtra(Constants.ALARM_TITLE, alarmTitle);
        notificationIntent.putExtra(Constants.LEAVE_HOUR, leaveHour);
        notificationIntent.putExtra(Constants.LEAVE_MINUTE, leaveMinute);
@@ -55,7 +59,7 @@ public class SmartAlarmService extends Service {
        notificationIntent.putExtra(Constants.ARRIVAL_MINUTE, arrivalMinute);
        notificationIntent.putExtra(Constants.DESTINATION_LONGITUDE, destinationLongitude);
        notificationIntent.putExtra(Constants.DESTINATION_LATITUDE, destinationLatitude);
-       pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+       PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
        Notification notification = new NotificationCompat.Builder(this, Constants.ALARM_CHANNEL)
                .setContentTitle(intent.getStringExtra(Constants.ALARM_TITLE))
                .setContentText("Alarm is going off")
