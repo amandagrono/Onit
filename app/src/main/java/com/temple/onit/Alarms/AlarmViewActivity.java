@@ -32,6 +32,12 @@ public class AlarmViewActivity extends AppCompatActivity implements OnMapReadyCa
     double destinationLongitude;
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_view);

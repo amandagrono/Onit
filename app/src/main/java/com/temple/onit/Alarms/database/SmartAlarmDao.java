@@ -21,7 +21,7 @@ public interface SmartAlarmDao {
     @Query("DELETE FROM alarm_table")
     void deleteAll();
 
-    @Query("SELECT * FROM alarm_table ORDER BY created ASC")
+    @Query("SELECT * FROM alarm_table ORDER BY created DESC")
     LiveData<List<SmartAlarm>> getAlarms();
 
     @Update

@@ -22,6 +22,8 @@ public class Constants {
     public static final String LEAVE_HOUR = "LEAVE_HOUR";
     public static final String LEAVE_MINUTE = "LEAVE_MINUTE";
 
+    public static final String ALARM_ID = "ALARM_ID";
+
     public static final String DESTINATION_LATITUDE = "DESTINATION_LATITUDE";
     public static final String DESTINATION_LONGITUDE = "DESTINATION_LONGITUDE";
 

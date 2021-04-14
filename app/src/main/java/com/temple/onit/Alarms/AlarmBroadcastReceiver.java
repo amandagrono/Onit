@@ -87,6 +87,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         intentService.putExtra(Constants.DESTINATION_LONGITUDE, destinationLongitude);
         intentService.putExtra(Constants.DESTINATION_LATITUDE, destinationLatitude);
 
+        intentService.putExtra(Constants.ALARM_ID, intent.getIntExtra(Constants.ALARM_ID, 0));
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             context.startForegroundService(intentService);
         }

@@ -59,7 +59,7 @@ public class SmartAlarmService extends Service {
        notificationIntent.putExtra(Constants.ARRIVAL_MINUTE, arrivalMinute);
        notificationIntent.putExtra(Constants.DESTINATION_LONGITUDE, destinationLongitude);
        notificationIntent.putExtra(Constants.DESTINATION_LATITUDE, destinationLatitude);
-       PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+       PendingIntent pendingIntent = PendingIntent.getActivity(this, intent.getIntExtra(Constants.ALARM_ID, 0), notificationIntent, 0);
        Notification notification = new NotificationCompat.Builder(this, Constants.ALARM_CHANNEL)
                .setContentTitle(intent.getStringExtra(Constants.ALARM_TITLE))
                .setContentText("Alarm is going off")
@@ -74,7 +74,7 @@ public class SmartAlarmService extends Service {
        startForeground(1, notification);
 
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

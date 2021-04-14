@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Onit">
         <activity android:name=".Alarms.list.AlarmListActivity" />
-        <activity android:name=".Alarms.AlarmViewActivity" />
+        <activity android:name=".Alarms.AlarmViewActivity"
+            android:launchMode="singleTask"/>
 
         <receiver android:name=".Alarms.AlarmBroadcastReceiver">
             <intent-filter>

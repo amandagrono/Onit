@@ -228,6 +228,8 @@ public class SmartAlarm{
         intent.putExtra(Constants.LEAVE_HOUR, millisToHours(leaveTime));
         intent.putExtra(Constants.LEAVE_MINUTE, millisToMinutes(leaveTime));
 
+        intent.putExtra(Constants.ALARM_ID, alarmId);
+
         Log.d("Alarm Title Intent", "Schedule Alarm: " + intent.getStringExtra(Constants.ALARM_TITLE));
 
         int wakeupHour = millisToHours(wakeupTime);
