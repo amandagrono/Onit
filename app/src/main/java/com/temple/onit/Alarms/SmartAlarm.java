@@ -10,6 +10,10 @@ import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.temple.onit.Constants;
 
 import java.util.Calendar;
@@ -17,12 +21,13 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
+@Entity(tableName = "alarm_table")
+public class SmartAlarm{
 
-public class SmartAlarm implements Parcelable {
-
-
-    private Location destinationLocation;
-    private Location lastKnownLocation;
+    private double destinationLatitude;
+    private double destinationLongitude;
+    private double startingLatitude;
+    private double startingLongitude;
 
     private int arrivalHour;
     private int arrivalMinute;
@@ -32,56 +37,31 @@ public class SmartAlarm implements Parcelable {
     private String alarmTitle;
     private String days;
 
-    private boolean enabled, recurring;
+    private boolean started, recurring;
+    private long created;
+
+    @PrimaryKey
+    @NonNull
     private int alarmId;
 
-    public SmartAlarm(){
-        alarmId = (new Random()).nextInt();
-        destinationLocation = new Location("new location provider");
-        destinationLocation.setLatitude(0);
-        destinationLocation.setLongitude(0);
-        lastKnownLocation = destinationLocation;
-        arrivalHour = 0;
-        arrivalMinute = 0;
-        getReadyTime = 0;
-        transitTime = 0;
-        days = "0000000";
-        alarmTitle = null;
-        this.enabled = true;
-        this.recurring = true;
+    public SmartAlarm(int alarmId, int arrivalHour, int arrivalMinute, long getReadyTime, long transitTime, String alarmTitle, String days, boolean started, boolean recurring, double startingLatitude, double startingLongitude, double destinationLatitude, double destinationLongitude, long created){
+        this.alarmId = alarmId;
+        this.arrivalHour = arrivalHour;
+        this.arrivalMinute = arrivalMinute;
+        this.getReadyTime = getReadyTime;
+        this.transitTime = transitTime;
+        this.alarmTitle = alarmTitle;
+        this.days = days;
+        this.started = started;
+        this.recurring = recurring;
+        this.startingLatitude = startingLatitude;
+        this.startingLongitude = startingLongitude;
+        this.destinationLongitude = destinationLongitude;
+        this.destinationLatitude = destinationLatitude;
+        this.created = created;
     }
 
-    protected SmartAlarm(Parcel in) {
-        this();
-        destinationLocation = in.readParcelable(Location.class.getClassLoader());
-        lastKnownLocation = in.readParcelable(Location.class.getClassLoader());
-        arrivalHour = in.readInt();
-        arrivalMinute = in.readInt();
-        getReadyTime = in.readLong();
-        transitTime = in.readLong();
-        days = in.readString();
-        alarmTitle = in.readString();
 
-    }
-
-    public static final Creator<SmartAlarm> CREATOR = new Creator<SmartAlarm>() {
-        @Override
-        public SmartAlarm createFromParcel(Parcel in) {
-            return new SmartAlarm(in);
-        }
-
-        @Override
-        public SmartAlarm[] newArray(int size) {
-            return new SmartAlarm[size];
-        }
-    };
-
-    public void setDestinationLocation(Location location){
-        this.destinationLocation = location;
-    }
-    public void setLastKnownLocation(Location location){
-        this.lastKnownLocation = location;
-    }
     public void setArrivalTime(int hour, int minute){
         this.arrivalHour = hour;
         this.arrivalMinute = minute;
@@ -98,12 +78,7 @@ public class SmartAlarm implements Parcelable {
     public void setDays(String days){this.days = days;}
     public void setRecurring(boolean recurring){ this.recurring = recurring; }
 
-    public Location getDestinationLocation(){
-        return destinationLocation;
-    }
-    public Location getLastKnownLocation(){
-        return lastKnownLocation;
-    }
+
     public int getArrivalHour(){ return arrivalHour; }
     public int getArrivalMinute() { return  arrivalMinute; }
     public long getGetReadyTime(){
@@ -117,6 +92,24 @@ public class SmartAlarm implements Parcelable {
     }
     public String getDays(){ return days; }
     public boolean getRecurring(){ return recurring; }
+    public double getDestinationLatitude(){
+        return destinationLatitude;
+    }
+    public double getDestinationLongitude(){
+        return destinationLongitude;
+    }
+    public double getStartingLatitude(){
+        return startingLatitude;
+    }
+    public double getStartingLongitude(){
+        return startingLongitude;
+    }
+    public int getAlarmId(){
+        return alarmId;
+    }
+    public long getCreated(){
+        return created;
+    }
 
     public String toString(){
         String daysEnabled = "";
@@ -142,16 +135,16 @@ public class SmartAlarm implements Parcelable {
             daysEnabled = daysEnabled + "Saturday, ";
         }
         return "Alarm Title: " + alarmTitle + "\n" +
-                "Destination Location: " + destinationLocation.getLatitude() + ", " + destinationLocation.getLongitude() + "\n" +
-                " Last Known Location: " + lastKnownLocation.getLatitude() + ", " + lastKnownLocation.getLongitude() + "\n" +
+                "Destination Location: " + destinationLatitude + ", " + destinationLongitude + "\n" +
+                " Last Known Location: " + startingLatitude + ", " + startingLongitude + "\n" +
                 " Arrival Time: " + arrivalHour + ":" + arrivalMinute + "\n" +
                 " Get Ready Time: " + getReadyTime/1000/60 + " Minutes\n" +
                 " Transit Time: " + transitTime + "\nDays Enabled: " + daysEnabled;
     }
 
 
-    public boolean isEnabled(){
-        return enabled;
+    public boolean isStarted(){
+        return started;
     }
 
     private int getLeaveHour(){
@@ -199,26 +192,95 @@ public class SmartAlarm implements Parcelable {
         return returnString.substring(0, returnString.length() - 2);
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     public boolean enabledOnDay(int day){
         return days.charAt(day) == '1';
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(destinationLocation, flags);
-        dest.writeParcelable(lastKnownLocation, flags);
-        dest.writeInt(arrivalHour);
-        dest.writeInt(arrivalMinute);
-        dest.writeLong(getReadyTime);
-        dest.writeLong(transitTime);
-        dest.writeString(days);
-        dest.writeString(alarmTitle);
+
+
+    public void schedule(Context context){
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(context, AlarmBroadcastReceiver.class);
+
+        intent.putExtra(Constants.RECURRING, recurring);
+        intent.putExtra(Constants.SUNDAY, enabledOnDay(0));
+        intent.putExtra(Constants.MONDAY, enabledOnDay(1));
+        intent.putExtra(Constants.TUESDAY, enabledOnDay(2));
+        intent.putExtra(Constants.WEDNESDAY, enabledOnDay(3));
+        intent.putExtra(Constants.THURSDAY, enabledOnDay(4));
+        intent.putExtra(Constants.FRIDAY, enabledOnDay(5));
+        intent.putExtra(Constants.SATURDAY, enabledOnDay(6));
+
+        intent.putExtra(Constants.ALARM_TITLE, alarmTitle);
+
+        intent.putExtra(Constants.DESTINATION_LATITUDE, destinationLatitude);
+        intent.putExtra(Constants.DESTINATION_LONGITUDE, destinationLongitude);
+
+        intent.putExtra(Constants.ARRIVAL_HOUR, arrivalHour);
+        intent.putExtra(Constants.ARRIVAL_MINUTE, arrivalMinute);
+
+        long arrivalTimeInMillis = arrivalHour*60*60*1000 + arrivalMinute*60*1000;
+        long leaveTime = arrivalTimeInMillis - transitTime*1000;
+        long wakeupTime = leaveTime - getReadyTime;
+
+        intent.putExtra(Constants.LEAVE_HOUR, millisToHours(leaveTime));
+        intent.putExtra(Constants.LEAVE_MINUTE, millisToMinutes(leaveTime));
+
+        Log.d("Alarm Title Intent", "Schedule Alarm: " + intent.getStringExtra(Constants.ALARM_TITLE));
+
+        int wakeupHour = millisToHours(wakeupTime);
+        int wakeupMin = millisToMinutes(wakeupTime);
+
+        Log.d("Wake Up Time ", "Time: " + wakeupHour + ":" + wakeupMin);
+
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, alarmId, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, wakeupHour);
+        calendar.set(Calendar.MINUTE, wakeupMin);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        Log.d("Save Alarm", calendar.getTime().toString());
+
+        if(calendar.getTimeInMillis() <= System.currentTimeMillis()){
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
+        }
+        if(!recurring){
+            Toast.makeText(context, "Alarm Created", Toast.LENGTH_LONG).show();
+
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
+
+        }
+        else{
+            Toast.makeText(context, "Recurring Alarm Scheduled", Toast.LENGTH_LONG).show();
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), Constants.HOUR_IN_MILLIS*24, alarmPendingIntent);
+        }
+
+        this.started = true;
 
     }
+
+    private int millisToHours(long millis){
+        return (int) (millis/Constants.HOUR_IN_MILLIS);
+    }
+    private int millisToMinutes(long millis){
+        millis = millis%Constants.HOUR_IN_MILLIS;
+        return (int) millis/Constants.MINUTE_IN_MILLIS;
+    }
+
+    public void cancel(Context context){
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmBroadcastReceiver.class);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, alarmId, intent, 0);
+        alarmManager.cancel(alarmPendingIntent);
+        this.started = false;
+
+        Toast.makeText(context, "Canceled Alarm", Toast.LENGTH_LONG).show();
+    }
+
+
+
 }

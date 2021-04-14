@@ -43,7 +43,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public static MapFragment newInstance(int state) {
+    public static MapFragment newInstance(int state, LatLng latLng) {
+        MapFragment fragment = new MapFragment();
+        Bundle args = new Bundle();
+        args.putInt("state", state);
+        args.putParcelable("latlng", latLng);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    public static MapFragment newInstance(int state){
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         args.putInt("state", state);
@@ -65,6 +73,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     break;
                 case 2:
                     textViewText = "Please select reminder location";
+            }
+            if(getArguments().getParcelable("latlng") != null){
+                this.currentLatLng = (LatLng) getArguments().getParcelable("latlng");
             }
         }
 
@@ -115,7 +126,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mapAPI = googleMap;
         LatLng temple = new LatLng(39.981142, -75.156161);
-        mapAPI.addMarker(new MarkerOptions().position(temple).title("Temple"));
+
+        if(currentLatLng == null){
+            currentLatLng = temple;
+        }
+        mapAPI.addMarker(new MarkerOptions().position(currentLatLng));
 
         CameraUpdate center = CameraUpdateFactory.newLatLngZoom(temple, 15);
         mapAPI.animateCamera(center);

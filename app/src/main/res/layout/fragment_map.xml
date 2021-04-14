@@ -30,6 +30,7 @@
     <Button
         android:id="@+id/save_alarm_button"
         android:layout_width="match_parent"
+        android:text="Save Location"
         android:layout_height="0dp"
         android:layout_weight=".1"/>
 

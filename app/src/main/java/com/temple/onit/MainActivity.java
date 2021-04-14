@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.temple.onit.Alarms.SmartAlarmActivity;
+import com.temple.onit.Alarms.list.AlarmListActivity;
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.services.LocationService;
@@ -28,18 +29,11 @@ public class MainActivity extends AppCompatActivity {
         newGeofencedReminderButton = findViewById(R.id.button_geofenced_reminder);
 
         newAlarmButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SmartAlarmActivity.class);
+            Intent intent = new Intent(MainActivity.this, AlarmListActivity.class);
             launchSmartAlarm(intent);
         });
         newProximityReminderButton.setOnClickListener(v->{
-            Intent intent = new Intent(MainActivity.this, SmartAlarmActivity.class);
-            SmartAlarm smartAlarm = new SmartAlarm();
-            smartAlarm.setAlarmTitle("Work");
-            smartAlarm.setArrivalTime(9, 30);
-            smartAlarm.setGetReadyTime(8700000);
-            smartAlarm.setDays("0111110");
-            intent.putExtra("alarm", smartAlarm);
-            launchSmartAlarm(intent);
+
         });
         newGeofencedReminderButton.setOnClickListener(v->{
             Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);

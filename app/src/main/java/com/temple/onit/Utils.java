@@ -37,7 +37,7 @@ public final class Utils {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if(notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null){
-            String name = "Remind Me There";
+            String name = "Onit";
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(notificationChannel);
         }

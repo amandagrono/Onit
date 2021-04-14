@@ -3,6 +3,8 @@ package com.temple.onit.Alarms;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -25,60 +27,63 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.temple.onit.Alarms.database.CreateAlarmViewModel;
 import com.temple.onit.Constants;
 import com.temple.onit.MapFragment;
 import com.temple.onit.R;
 import com.temple.onit.ServerManager;
 
 import java.util.Calendar;
+import java.util.Random;
 
 
-public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyCallback, MapFragment.MapFragmentInterface, ServerManager.ResponseListener {
+public class SmartAlarmActivity extends AppCompatActivity implements MapFragment.MapFragmentInterface, ServerManager.ResponseListener {
 
     private final String[] hoursArray = new String[24];
     private final String[] minutesArray = new String[60];
 
+    private EditText alarmTitleEditText;
+    private NumberPicker numberPickerHours;
+    private NumberPicker numberPickerMinutes;
+    private CheckBox recurringCheckBox;
+    private TimePicker timePicker;
+    private View dayPicker;
+    private ToggleButton sunday;
+    private ToggleButton monday;
+    private ToggleButton tuesday;
+    private ToggleButton wednesday;
+    private ToggleButton thursday;
+    private ToggleButton friday;
+    private ToggleButton saturday;
 
-    GoogleMap mapAPI;
-    MapFragment mapFragment;
-    MapFragment mapFragment2;
-    SmartAlarm smartAlarm;
 
-    EditText titleEditText;
-    NumberPicker hoursNumberPicker;
-    NumberPicker minutesNumberPicker;
-    TimePicker timePicker;
-    Button nextButton;
-    ToggleButton sunday, monday, tuesday, wednesday, thursday, friday, saturday;
-    CheckBox checkBox;
-    View dayPicker;
+    private Button nextButton;
+    private LatLng destinationLocation;
+    private LatLng startingLocation;
 
+    private boolean hasLocations = false;
+    private boolean hasAllData = false;
 
-    /** Alarm Values To Be Saved **/
-    int hoursInt = 0;
-    int minutesInt = 0;
-    int arrivalHour = 0;
-    int arrivalMinute = 0;
-    private String daysArray;
-    String alarmTitle = "";
-    boolean recurring = false;
+    private long transitTime = 0;
+
+    private int state = 0;
+
+    private CreateAlarmViewModel createAlarmViewModel;
+
+    private MapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_smart_alarm);
-
-
-        daysArray = "0000000";
-
-        titleEditText = findViewById(R.id.alarmTitleEditText);
-        hoursNumberPicker = findViewById(R.id.numberPickerHours);
-        minutesNumberPicker = findViewById(R.id.numberPickerMinutes);
+        alarmTitleEditText = findViewById(R.id.alarmTitleEditText);
+        numberPickerHours = findViewById(R.id.numberPickerHours);
+        numberPickerMinutes = findViewById(R.id.numberPickerMinutes);
+        recurringCheckBox = findViewById(R.id.recurringCheckbox);
         timePicker = findViewById(R.id.timePicker);
-        nextButton = findViewById(R.id.nextButton);
         dayPicker = findViewById(R.id.daypicker);
+        nextButton = findViewById(R.id.nextButton);
 
-        //Toggle Buttons
         sunday = findViewById(R.id.sun_toggle);
         monday = findViewById(R.id.mon_toggle);
         tuesday = findViewById(R.id.tues_toggle);
@@ -86,165 +91,42 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         thursday = findViewById(R.id.thurs_toggle);
         friday = findViewById(R.id.fri_toggle);
         saturday = findViewById(R.id.sat_toggle);
-
-        //CheckBox
-        checkBox = findViewById(R.id.recurringCheckbox);
-
-        //When user wants to edit alarm.
-        if(getIntent().hasExtra("alarm")){
-
-            smartAlarm = (SmartAlarm) getIntent().getParcelableExtra("alarm");
-
-            daysArray = smartAlarm.getDays();
-            hoursInt = calculateHours(smartAlarm.getGetReadyTime());
-            minutesInt = calculateMinutes(smartAlarm.getGetReadyTime(), hoursInt);
-            arrivalHour = smartAlarm.getArrivalHour();
-            arrivalMinute = smartAlarm.getArrivalMinute();
-            alarmTitle = smartAlarm.getAlarmTitle();
-            recurring = smartAlarm.getRecurring();
-            Log.d("Smart Alarm Restore: ", "Smart Alarm Object: \n_______________________\n" + smartAlarm.toString());
-            Log.d("Smart Alarm Restore: ", "Field Alarm Title: " + alarmTitle);
-            Log.d("Smart Alarm Restore: ", "Field numberpicker hoursInt: " + hoursInt);
-            Log.d("Smart Alarm Restore: ", "Field numberpicker minutesInt: " + minutesInt);
-            Log.d("Smart Alarm Restore: ", "Field timepicker arrival hour: " + arrivalHour);
-            Log.d("Smart Alarm Restore: ", "Field timepicker arrival minute: " + arrivalMinute);
-            Log.d("Smart Alarm Restore: ", "Field Days Array:  " + daysArray);
-            Log.d("Smart Alarm Restore: ", "Field recurring: " + recurring);
-
-
-
-        }
-        else{
-            smartAlarm = new SmartAlarm();
-        }
-
-
+        createAlarmViewModel = ViewModelProviders.of(this).get(CreateAlarmViewModel.class);
 
         loadArrays();
-        listeners();
-        resetViews();
 
-        Log.d("Alarm" , smartAlarm.toString());
+        numberPickerHours.setDisplayedValues(hoursArray);
+        numberPickerMinutes.setDisplayedValues(minutesArray);
 
-        mapFragment = MapFragment.newInstance(0);
-        mapFragment2 = MapFragment.newInstance(1);
+        numberPickerHours.setMinValue(0);
+        numberPickerHours.setMaxValue(hoursArray.length - 1);
 
-    }
+        numberPickerMinutes.setMinValue(0);
+        numberPickerMinutes.setMaxValue(minutesArray.length - 1);
 
-    private void listeners(){
-        titleEditText.addTextChangedListener(new TextWatcher() {
+        setNextButtonListener();
+
+        recurringCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                alarmTitle = s.toString();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        hoursNumberPicker.setDisplayedValues(hoursArray);
-        minutesNumberPicker.setDisplayedValues(minutesArray);
-        hoursNumberPicker.setMinValue(0);
-        hoursNumberPicker.setMaxValue(hoursArray.length-1);
-        minutesNumberPicker.setMinValue(0);
-        minutesNumberPicker.setMaxValue(minutesArray.length-1);
-        hoursNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                hoursInt = newVal;
-            }
-        });
-        minutesNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                minutesInt = newVal;
-            }
-        });
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                arrivalHour = hourOfDay;
-                arrivalMinute = minute;
-            }
-        });
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("OnClick", "OnClickCalled");
-                if(titleEditText.getText().toString().equals("")){
-                    Log.d("OnClick", "If Statement");
-                    Toast.makeText(SmartAlarmActivity.this, "must enter alarm title", Toast.LENGTH_LONG).show();
-                    return;
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    dayPicker.setVisibility(View.VISIBLE);
                 }
-                smartAlarm.setAlarmTitle(titleEditText.getText().toString());
-                smartAlarm.setGetReadyTime(calculateMillis(hoursInt, minutesInt));
-                smartAlarm.setArrivalTime(arrivalHour, arrivalMinute);
-                smartAlarm.setDays(daysArray);
-                smartAlarm.setAlarmTitle(alarmTitle);
-
-                Log.d("Smart Alarm Next: ", smartAlarm.toString());
-
-                View layout = findViewById(R.id.smartAlarmLinearLayout);
-                layout.setVisibility(View.GONE);
-
-                View mapView = findViewById(R.id.fullscreenMapLayout);
-                mapView.setVisibility(View.VISIBLE);
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.add(R.id.fullscreenMapLayout, mapFragment).commit();
-
-
+                else{
+                    dayPicker.setVisibility(View.GONE);
+                    sunday.setChecked(false);
+                    monday.setChecked(false);
+                    tuesday.setChecked(false);
+                    wednesday.setChecked(false);
+                    thursday.setChecked(false);
+                    friday.setChecked(false);
+                    saturday.setChecked(false);
+                }
             }
+
         });
-        sunday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(0, isChecked));
-        monday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(1, isChecked));
-        tuesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(2, isChecked));
-        wednesday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(3, isChecked));
-        thursday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(4, isChecked));
-        friday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(5, isChecked));
-        saturday.setOnCheckedChangeListener((buttonView, isChecked) -> daysArray = newString(6, isChecked));
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            recurring = isChecked;
-            if(recurring) dayPicker.setVisibility(View.VISIBLE);
-            if(!recurring){
-                sunday.setChecked(false);
-                monday.setChecked(false);
-                tuesday.setChecked(false);
-                wednesday.setChecked(false);
-                thursday.setChecked(false);
-                friday.setChecked(false);
-                saturday.setChecked(false);
-                dayPicker.setVisibility(View.GONE);
-            }
-        });
+
     }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mapAPI = googleMap;
-        LatLng temple = new LatLng(39.981142, -75.156161);
-        mapAPI.addMarker(new MarkerOptions().position(temple).title("Temple"));
-
-        CameraUpdate center = CameraUpdateFactory.newLatLngZoom(temple, 15);
-        mapAPI.animateCamera(center);
-
-        mapAPI.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                Log.d("LatLng", latLng.toString());
-                mapAPI.clear();
-                mapAPI.addMarker(new MarkerOptions().position(latLng));
-
-            }
-        });
-    }
-
     private void loadArrays(){
         for(int i = 0; i < 24; i++){
             hoursArray[i] = String.valueOf(i);
@@ -254,141 +136,149 @@ public class SmartAlarmActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    private long calculateMillis(int hours, int minutes){
+    private void setNextButtonListener(){
+        nextButton.setOnClickListener(v -> {
+            if(alarmTitleEditText.getText().toString().equals("")) return;
+
+            if(!hasLocations) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                mapFragment = MapFragment.newInstance(0);
+                ft.add(R.id.fullscreenMapLayout, mapFragment).addToBackStack(null).commit();
+                View mapLayout = findViewById(R.id.fullscreenMapLayout);
+                mapLayout.setVisibility(View.VISIBLE);
+                View smartAlarmLinearLayout = findViewById(R.id.smartAlarmLinearLayout);
+                smartAlarmLinearLayout.setVisibility(View.GONE);
+            }
+            else{
+                if(hasAllData){
+                    saveAlarm();
+                    finish();
+                }
+            }
+        });
+    }
+
+    private void saveAlarm(){
+        int id = new Random().nextInt(Integer.MAX_VALUE);
+        Location start = new Location("");
+        Location end = new Location("");
+        start.setLongitude(startingLocation.longitude);
+        start.setLatitude(startingLocation.latitude);
+        end.setLongitude(destinationLocation.longitude);
+        end.setLatitude(destinationLocation.latitude);
+
+        SmartAlarm smartAlarm = new SmartAlarm(id, timePicker.getHour(), timePicker.getMinute(), calculateGetReadyTime(), transitTime, alarmTitleEditText.getText().toString(), getDaysEnabled(), true, recurringCheckBox.isChecked(), startingLocation.latitude, startingLocation.longitude, destinationLocation.latitude, destinationLocation.longitude, System.currentTimeMillis());
+        Log.d("Save Alarm", smartAlarm.toString());
+        createAlarmViewModel.insert(smartAlarm);
+        smartAlarm.schedule(this);
+
+    }
+
+    private long calculateGetReadyTime(){
         long millis = 0;
-        millis = millis + hours*60*60*1000;
-        millis = millis + minutes*60*1000;
+        millis = millis + numberPickerHours.getValue()*60*60*1000;
+        millis = millis + numberPickerMinutes.getValue()*60*1000;
         return millis;
     }
-    private int calculateHours(long millis){
-        int hours = 0;
-        while(millis > Constants.HOUR_IN_MILLIS){
-            millis = millis - Constants.HOUR_IN_MILLIS;
 
-            hours++;
+    private String getDaysEnabled(){
+        String returnString = "";
+        if(sunday.isChecked()){
+            returnString += "1";
         }
-        return hours;
-    }
-    private int calculateMinutes(long millis, long hours){
-        millis = millis % (hours*Constants.HOUR_IN_MILLIS);
-        int minutes = 0;
-
-        while(millis >= Constants.MINUTE_IN_MILLIS){
-            millis = millis - Constants.MINUTE_IN_MILLIS;
-            minutes++;
+        else{
+            returnString += "0";
         }
-        return minutes;
+        if(monday.isChecked()){
+            returnString += "1";
+        }
+        else{
+            returnString += "0";
+        }
+        if(tuesday.isChecked()){
+            returnString += "1";
+        }
+        else{
+            returnString += "0";
+        }
+        if(wednesday.isChecked()){
+            returnString += "1";
+        }
+        else{
+            returnString += "0";
+        }
+        if(thursday.isChecked()){
+            returnString += "1";
+        }
+        else{
+            returnString += "0";
+        }
+        if(friday.isChecked()){
+            returnString += "1";
+        }
+        else{
+            returnString += "0";
+        }
+        if(saturday.isChecked()){
+            returnString += "1";
+        }
+        else{
+            returnString += "0";
+        }
+        return returnString;
+
     }
-    private void resetViews(){
-        titleEditText.setText(alarmTitle);
-        hoursNumberPicker.setValue(hoursInt);
-        minutesNumberPicker.setValue(minutesInt);
 
-        /** Everything outside of this works as intended **/
-        Log.d("TimePicker", "Hour: " + String.valueOf(arrivalHour));
-        int temp = arrivalHour;
-        int temp2 = arrivalMinute;
-        timePicker.setHour(temp);
-        Log.d("TimePicker", "Minute: " + String.valueOf(arrivalMinute));
-        timePicker.setMinute(temp2);
-
-        /**************************************************/
-
-        sunday.setChecked(toBoolean(daysArray.charAt(0)));
-        monday.setChecked(toBoolean(daysArray.charAt(1)));
-        tuesday.setChecked(toBoolean(daysArray.charAt(2)));
-        wednesday.setChecked(toBoolean(daysArray.charAt(3)));
-        thursday.setChecked(toBoolean(daysArray.charAt(4)));
-        friday.setChecked(toBoolean(daysArray.charAt(5)));
-        saturday.setChecked(toBoolean(daysArray.charAt(6)));
-    }
 
     @Override
     public void saveLocation(LatLng latLng, int state) {
-
-        if(state == 0) { //called when user is saving destination location.
-
+        if(state == 0){
+            destinationLocation = latLng;
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             ft.remove(mapFragment);
-            ft.add(R.id.fullscreenMapLayout, mapFragment2)
-                    .commit();
-            Location location = new Location("");
-            location.setLongitude(latLng.longitude);
-            location.setLatitude(latLng.latitude);
-            smartAlarm.setDestinationLocation(location);
-
+            mapFragment = MapFragment.newInstance(1);
+            ft.add(R.id.fullscreenMapLayout, mapFragment);
+            ft.commit();
         }
-        else{ // State == 1 Called when user is saving starting location.
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.remove(mapFragment).remove(mapFragment2).commit();
-
-            View linearLayout = findViewById(R.id.smartAlarmLinearLayout);
-            linearLayout.setVisibility(View.VISIBLE);
-            View mapLayout = findViewById(R.id.fullscreenMapLayout);
-            mapLayout.setVisibility(View.GONE);
-
-            Location location = new Location("");
-            location.setLongitude(latLng.longitude);
-            location.setLatitude(latLng.latitude);
-            smartAlarm.setLastKnownLocation(location);
+        if(state == 1){
+            startingLocation = latLng;
+            hasLocations();
             calculateTransitTime();
-            mapFragment = MapFragment.newInstance(0);
-            mapFragment2 = MapFragment.newInstance(1);
-        }
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        Log.d("OnBackPressed", "OnBackPressed Called");
-        View layout = findViewById(R.id.smartAlarmLinearLayout);
-        View mapLayout = findViewById(R.id.fullscreenMapLayout);
-        if(layout.getVisibility() == View.GONE && mapFragment.isVisible()){
-            layout.setVisibility(View.VISIBLE);
-            mapLayout.setVisibility(View.GONE);
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.remove(mapFragment).remove(mapFragment2).commit();
-        }
-        else if(layout.getVisibility() == View.GONE && mapFragment2.isVisible()){
-            FragmentManager fm = getSupportFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(mapLayout.getId(), mapFragment).commit();
-            mapFragment2 = MapFragment.newInstance(1);
-        }
-        else {
-            super.onBackPressed();
         }
     }
 
-    public void calculateTransitTime(){
-        LatLng origin = new LatLng(smartAlarm.getLastKnownLocation().getLatitude(), smartAlarm.getLastKnownLocation().getLongitude());
-        LatLng destination = new LatLng(smartAlarm.getDestinationLocation().getLatitude(), smartAlarm.getDestinationLocation().getLongitude());
-        long arrivalTimeOfDay = calculateMillis(smartAlarm.getArrivalHour(), smartAlarm.getArrivalMinute())/1000;
-        long arrivalTimeInSeconds = (ServerManager.calculateArrivalTimeInMillis(Calendar.SUNDAY) + arrivalTimeOfDay);
+    private void calculateTransitTime(){
+        LatLng origin = startingLocation;
+        LatLng destination = destinationLocation;
+        long arrivalTimeOfDay = calculateMillis();
+        long arrivalTimeInSeconds = (ServerManager.calculateArrivalTimeInMillis(Calendar.SUNDAY) + arrivalTimeOfDay)/1000;
 
         ServerManager.sendRequest(origin, destination, arrivalTimeInSeconds, this);
+
+        //this will forward to the call back gotResponse to set the transit time
     }
 
-    private char to0or1(boolean checked){
-         if(checked) return '1';
-         else return '0';
+    private long calculateMillis(){
+        long millis = 0;
+        millis = millis + timePicker.getHour() * 60*60*1000;
+        millis = millis + timePicker.getMinute()*60*1000;
+        return millis;
     }
-    private boolean toBoolean(char zeroOr1){
-        if(zeroOr1 == '1') return true;
-        else return false;
-    }
-    private String newString(int index, boolean checked){
-        StringBuilder newString = new StringBuilder(daysArray);
-        newString.setCharAt(index, to0or1(checked));
-        return newString.toString();
+
+    private void hasLocations(){
+        hasLocations = true;
+        nextButton.setText("Save Alarm");
+        View mapLayout = findViewById(R.id.fullscreenMapLayout);
+        mapLayout.setVisibility(View.GONE);
+        View smartAlarmLinearLayout = findViewById(R.id.smartAlarmLinearLayout);
+        smartAlarmLinearLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void gotResponse(String jsonObject) {
-        smartAlarm.setTransitTime(ServerManager.parseDirectionsJson(jsonObject));
-        Log.d("Smart Alarm W Transit Time", smartAlarm.toString());
+        transitTime = ServerManager.parseDirectionsJson(jsonObject);
+        hasAllData = true;
     }
 }

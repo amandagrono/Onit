@@ -18,7 +18,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Onit">
+        <activity android:name=".Alarms.list.AlarmListActivity" />
+        <activity android:name=".Alarms.AlarmViewActivity" />
 
+        <receiver android:name=".Alarms.AlarmBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".Alarms.services.RescheduleSmartAlarmService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".Alarms.services.SmartAlarmService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity android:name=".GeofencedReminder.NewGeofencedReminderActivity" />
 
