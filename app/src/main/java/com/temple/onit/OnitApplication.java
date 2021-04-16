@@ -20,7 +20,6 @@ public class OnitApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        Log.d("Application onCreate called", "oncreate called");
         geofenceReminderManager = new GeofenceReminderManager(this);
         createNotificationChannelAlarm();
     }

@@ -30,4 +30,29 @@ public class Constants {
 
     public static final int HOUR_IN_MILLIS = 3600000;
     public static final int MINUTE_IN_MILLIS = 60000;
+
+    public static final String URL = "192.168.1.235:3000";
+
+    /* API ENDPOINTS FOR ACCOUNTS */
+    public static final String API_ADD_USER = URL+"/add_user";
+    public static final String API_LOGIN = URL+"/login";
+    public static final String API_TOKEN_LOGIN = URL+"/token_login";
+    public static final String API_UPDATE_FIREBASE_TOKEN = URL+"/update_fb_token";
+
+    /* API ENDPOINTS FOR USER REMINDERS */
+    public static final String API_ADD_USER_REMINDER = URL+"/user_reminder";
+    public static final String API_GET_UNACCEPTED_USER_REMINDERS = URL+"/get_unaccepted_user_reminders";
+    public static final String API_GET_USER_REMINDERS = URL+"/get_user_reminder";
+    public static final String API_DELETE_USER_REMINDER = URL+"/delete_user_reminder";
+    public static final String API_UPDATE_USER_REMINDER = URL+"/user_reminder_update";
+
+    /* API ENDPOINTS FOR GEOFENCED REMINDERS */
+    public static final String API_ADD_GEOFENCED_REMINDER = URL+"/geo_reminder";
+    public static final String API_GET_GEOFENCED_REMINDERS = URL+"/get_geo_reminder";
+    public static final String API_DELETE_GEOFENCED_REMINDER = URL+"/delete_geofence";
+
+    /* API ENDPOINTS FOR SMART ALARMS */
+    public static final String API_ADD_SMART_ALARM = URL+"/alarm";
+    public static final String API_GET_SMART_ALARMS = URL+"/get_alarm";
+    public static final String API_DELETE_SMART_ALARMS = URL+"/delete_alarm";
 }

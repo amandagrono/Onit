@@ -80,7 +80,7 @@ public class LocationService extends Service {
             // GPS is the only really useful provider here, since we need
             // high fidelity meter-level accuracy
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    0,
+                    30*60*1000, //send location updates every 30 seconds
                     10,
                     locationListener);
         }
