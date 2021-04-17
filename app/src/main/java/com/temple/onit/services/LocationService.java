@@ -1,13 +1,8 @@
 package com.temple.onit.services;
 
-import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
+
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -16,18 +11,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import android.os.IBinder;
-import android.util.Log;
-
-import androidx.core.app.NotificationCompat;
-
-import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
-import com.temple.onit.R;
 
 public class LocationService extends Service {
-    LocationManager locationManager;
-    LocationListener locationListener;
-
     public LocationService() {
     }
 
@@ -36,6 +23,7 @@ public class LocationService extends Service {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
 
     @Override
     public void onCreate() {
@@ -108,4 +96,5 @@ public class LocationService extends Service {
                 .build();
         startForeground(2, notification);
     }
+
 }

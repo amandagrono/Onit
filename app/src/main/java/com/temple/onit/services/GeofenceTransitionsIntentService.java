@@ -27,7 +27,7 @@ public class GeofenceTransitionsIntentService extends JobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
-        Log.d("Geofencing Event Triggered", "Event Triggered");
+
         if(geofencingEvent.hasError()){
             Log.d("Geofencing Error", "" + geofencingEvent.getErrorCode());
             return;
@@ -43,7 +43,6 @@ public class GeofenceTransitionsIntentService extends JobIntentService {
             LatLng latLng = new LatLng(reminder.getLocation().latitude, reminder.getLocation().longitude);
             if(message != null){
                 Utils.sendNotification(this, message, latLng);
-
             }
         }
     }
