@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.temple.onit.Alarms.SmartAlarm;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,6 +91,10 @@ public class ServerManager {
         Log.d("Calculate Next Sunday", "Next Sunday: " + date.getTimeInMillis());
 
         return date.getTimeInMillis()/1000;
+    }
+
+    public static void putAlarmInDatabase(SmartAlarm alarm){
+
     }
 
     public interface ResponseListener{

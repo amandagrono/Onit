@@ -145,7 +145,7 @@ public class GeofenceReminderManager {
         return getAll().get(getAll().size() - 1);
     }
 
-    interface GeofenceManagerInterface{
+    public interface GeofenceManagerInterface{
         public void onSuccess();
         public void onFailure(String error);
     }

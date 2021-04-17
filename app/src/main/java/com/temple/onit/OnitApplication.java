@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.temple.onit.GeofencedReminder.GeofenceReminderManager;
+import com.temple.onit.account.AccountManager;
 
 
 public class OnitApplication extends Application {
@@ -14,6 +15,7 @@ public class OnitApplication extends Application {
 
     public static OnitApplication instance;
     private GeofenceReminderManager geofenceReminderManager;
+    private AccountManager accountManager;
 
 
     @Override
@@ -21,9 +23,13 @@ public class OnitApplication extends Application {
         super.onCreate();
         instance = this;
         geofenceReminderManager = new GeofenceReminderManager(this);
+        accountManager = new AccountManager(this);
         createNotificationChannelAlarm();
     }
 
+    public AccountManager getAccountManager() {
+        return accountManager;
+    }
 
     public GeofenceReminderManager getGeofenceReminderManager(){
         return geofenceReminderManager;
