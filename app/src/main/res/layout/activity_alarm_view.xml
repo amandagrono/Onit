@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MapFragment"
+    tools:context=".Alarms.AlarmViewActivity"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/mapTextView"
-        android:text="Please Select Destination Location"
-        android:gravity="center"
+        android:id="@+id/alarm_title_text_view"
+        android:textSize="48sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <EditText
-        android:inputType="text"
-        android:autofillHints="Enter Location"
-        android:hint="@string/enter_location"
-        android:id="@+id/mapEditText"
+    <TextView
+        android:id="@+id/alarm_text_text_view"
+        android:textSize="20sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"/>
 
-    </EditText>
     <fragment
-        android:id="@+id/map"
+        android:id="@+id/alarm_view_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".8"/>
+        android:layout_weight="1"/>
     <Button
-        android:id="@+id/save_alarm_button"
+        android:id="@+id/alarm_view_dismiss_button"
+        android:text="Dismiss"
+        android:textSize="36sp"
         android:layout_width="match_parent"
-        android:text="Save Location"
         android:layout_height="0dp"
-        android:layout_weight=".1"/>
+        android:layout_weight=".2"/>
 
 </LinearLayout>

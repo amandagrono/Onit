@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "650281472107",
+    "project_id": "onit-project",
+    "storage_bucket": "onit-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650281472107:android:363874346c0efcaf0c212e",
+        "android_client_info": {
+          "package_name": "com.temple.onit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650281472107-g2fpcv4dvdpn2rgs0k6cg9molaophmn5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6dEMpUlOIaGiHe6DWN-mduFsNVvvU1ps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650281472107-g2fpcv4dvdpn2rgs0k6cg9molaophmn5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

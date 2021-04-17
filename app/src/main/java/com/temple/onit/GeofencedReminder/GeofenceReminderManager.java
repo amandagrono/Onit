@@ -7,25 +7,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
-import com.temple.onit.GeofencedReminder.GeofenceBroadcastReceiver;
-import com.temple.onit.R;
-import com.temple.onit.dataclasses.GeofencedReminder;
+import com.temple.onit.Constants;
+import com.temple.onit.OnitApplication;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import kotlin.Unit;
 import kotlin.collections.CollectionsKt;
-import kotlin.jvm.internal.Lambda;
 
 
 public class GeofenceReminderManager {
@@ -102,6 +102,20 @@ public class GeofenceReminderManager {
                     Log.d("Failed to remove geofence", "Failed to remove geofence");
                     activity.onFailure(GeofenceErrors.getErrorString(context, e));
                 });
+        removeFromServer(geofencedReminder);
+
+    }
+    private void removeFromServer(GeofencedReminder reminder){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = Constants.API_DELETE_GEOFENCED_REMINDER + "?username=" + OnitApplication.instance.getAccountManager().username +
+                "&latitude="+reminder.getLatLng().latitude+"&longitude="+reminder.getLatLng().longitude+"&distance="+reminder.getRadius()
+                +"&body="+reminder.getReminderContent();
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url, response -> {
+            Log.d("Geofence", "Removed Geofenced Reminder from server");
+        }, error -> {
+            Toast.makeText(context, "Failed to remove reminder from server", Toast.LENGTH_SHORT).show();
+        });
+        queue.add(stringRequest);
     }
 
     public List<GeofencedReminder> getAll(){
@@ -154,7 +168,7 @@ public class GeofenceReminderManager {
         return getAll().get(getAll().size() - 1);
     }
 
-    interface GeofenceManagerInterface{
+    public interface GeofenceManagerInterface{
         public void onSuccess();
         public void onFailure(String error);
     }

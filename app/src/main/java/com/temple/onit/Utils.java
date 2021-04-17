@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
-import com.temple.onit.dataclasses.GeofencedReminder;
+import com.temple.onit.GeofencedReminder.GeofencedReminder;
 
 public final class Utils {
     private static final String NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel";
@@ -37,7 +37,7 @@ public final class Utils {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if(notificationManager.getNotificationChannel(NOTIFICATION_CHANNEL_ID) == null){
-            String name = "Remind Me There";
+            String name = "Onit";
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(notificationChannel);
         }
