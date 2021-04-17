@@ -59,9 +59,7 @@ public class GeofenceReminderManager {
 
 
     public void add(GeofencedReminder geofencedReminder, Context context, GeofenceManagerInterface activity){
-        List<GeofencedReminder> list = getAll();
-        list.add(geofencedReminder);
-        saveAll(list);
+
         Geofence geofence = buildGeofence(geofencedReminder);
         if(geofence != null
                 && ContextCompat.checkSelfPermission

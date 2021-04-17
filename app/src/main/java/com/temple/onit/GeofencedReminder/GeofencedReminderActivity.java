@@ -58,12 +58,15 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
         currentLocationFAB = findViewById(R.id.currentLocation);
         currentLocationFAB.setVisibility(View.GONE);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String bestProvider = locationManager.getBestProvider(new Criteria(), false);
+
+
+
         newReminderFAB.setOnClickListener(v -> {
             Intent intent = NewGeofencedReminderActivity.newIntent(this, googleMap.getCameraPosition().target, googleMap.getCameraPosition().zoom);
             startActivityForResult(intent, 329);
         });
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
@@ -111,6 +114,7 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
             centerCamera();
         }
     }
+
 
     private void centerCamera(){
         if(getIntent().getExtras() != null && getIntent().getExtras().containsKey("ExtraLatLng")){

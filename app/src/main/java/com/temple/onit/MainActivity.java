@@ -3,10 +3,8 @@ package com.temple.onit;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -30,11 +28,9 @@ import com.temple.onit.Alarms.list.AlarmListActivity;
 import com.temple.onit.GeofencedReminder.GeofenceReminderManager;
 import com.temple.onit.GeofencedReminder.GeofencedReminder;
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
-
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.account.AccountManager;
 import com.temple.onit.services.LocationService;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);
             launchGeofencedReminder(intent);
         });
-
 
         if(OnitApplication.instance.getAccountManager().loggedIn){
             changeToLogOut();
@@ -137,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             changeToLogIn();
 
         });
-
     }
 
     public void launchSmartAlarm(Intent intent){
