@@ -36,6 +36,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface {
 
     private Button newAlarmButton;
@@ -48,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if(getIntent().getExtras() != null){
+            Toast.makeText(this, getIntent().getStringExtra("testdata"), Toast.LENGTH_SHORT).show();
+        }
 
         OnitApplication.instance.getAccountManager().setListener(this);
         newAlarmButton = findViewById(R.id.button_alarm);
@@ -122,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
     private void changeToLogOut(){
         loginButton.setText("Logout");
         loginButton.setOnClickListener(v -> {
-            OnitApplication.instance.getAccountManager().logout();
+            OnitApplication.instance.getAccountManager().logout(this);
             changeToLogIn();
 
         });
@@ -152,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
     public void addNewGeofenceReminders(String data){
         try{
             JSONArray jsonArray = new JSONArray(data);
+            List<GeofencedReminder> reminderList = OnitApplication.instance.getGeofenceReminderManager().getAll();
             for(int i = 0; i < jsonArray.length(); i++){
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 double latitude = jsonObject.getDouble("latitude");
@@ -160,7 +167,10 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
                 String body = jsonObject.getString("body");
                 String title = jsonObject.getString("title");
                 GeofencedReminder geofencedReminder = new GeofencedReminder(new LatLng(latitude, longitude), title, body, distance);
-                OnitApplication.instance.getGeofenceReminderManager().add(geofencedReminder, this, this);
+                if(!reminderList.contains(geofencedReminder)){
+                    OnitApplication.instance.getGeofenceReminderManager().add(geofencedReminder, this, this);
+                }
+
             }
         }
         catch (JSONException e){

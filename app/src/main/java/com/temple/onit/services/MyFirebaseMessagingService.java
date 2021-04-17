@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
+import com.temple.onit.OnitApplication;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -17,6 +18,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(s);
 
         //Post request to change token in server
-
+        OnitApplication.instance.getAccountManager().updateFBToken(s, this);
     }
 }

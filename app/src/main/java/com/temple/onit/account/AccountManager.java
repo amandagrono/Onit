@@ -9,6 +9,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.temple.onit.Constants;
 
 public class AccountManager {
@@ -49,12 +51,17 @@ public class AccountManager {
 
     public void regularLogin(String username, String password, Context context){
         RequestQueue queue = Volley.newRequestQueue(context);
+
         String url = Constants.API_LOGIN + "?username="+username+"&password="+password;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             Log.d("Response: ", response);
             setToken(response);
             setUsername(username);
             setLoggedIn(true);
+            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(s -> {
+                Log.d("Firebase Token Login", s);
+                updateFBToken(s, context);
+            });
             listener.onLoginResponse(true);
         }, error -> {
             Log.d("Error: ", error.toString());
@@ -81,11 +88,24 @@ public class AccountManager {
 
         return true;
     }
-    public void logout(){
+    public void logout(Context context){
         this.username = "";
         this.loggedIn = false;
         preferences.edit().putString("Token", "").apply();
+        updateFBToken(" ", context);
 
+    }
+
+    public void updateFBToken(String token, Context context){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = Constants.API_UPDATE_FIREBASE_TOKEN+"?username="+username+"&firebase_token="+token;
+        Log.d("UpdateFB", url);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+            Log.d("UpdateFBToken", "Successfully updated firebase token association");
+        }, error -> {
+            Log.d("UpdateFBToken", "Failed to update firebase token association");
+        });
+        queue.add(stringRequest);
     }
 
     public interface AccountListener{
