@@ -62,7 +62,9 @@ public class AccountManager {
                 Log.d("Firebase Token Login", s);
                 updateFBToken(s, context);
             });
-            listener.onLoginResponse(true);
+            if(listener != null){
+                listener.onLoginResponse(true);
+            }
         }, error -> {
             Log.d("Error: ", error.toString());
             Toast.makeText(context, "Failed to log in", Toast.LENGTH_SHORT).show();

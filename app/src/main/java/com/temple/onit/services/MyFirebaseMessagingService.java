@@ -8,10 +8,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.temple.onit.OnitApplication;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+
+    @Override
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+    }
 
     @Override
     public void onNewToken(@NonNull String s) {

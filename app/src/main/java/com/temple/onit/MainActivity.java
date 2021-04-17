@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -52,7 +53,12 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         setContentView(R.layout.activity_main);
 
         if(getIntent().getExtras() != null){
-            Toast.makeText(this, getIntent().getStringExtra("testdata"), Toast.LENGTH_SHORT).show();
+            String status = getIntent().getStringExtra("status");
+            if(status != null){
+                if(status.equals("17")){
+                    createReminderAlertDialog();
+                }
+            }
         }
 
         OnitApplication.instance.getAccountManager().setListener(this);
@@ -112,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
                     .setPositiveButton("Enter", (dialog1, which) -> {
                         if(username.getText().toString().equals("") || password.getText().toString().equals("")){
                             Toast.makeText(context, "Please Enter A Username", Toast.LENGTH_SHORT).show();
+
                         }
                         else{
                             OnitApplication.instance.getAccountManager().regularLogin(username.getText().toString(), password.getText().toString(), context);
@@ -177,6 +184,57 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             e.printStackTrace();
         }
 
+    }
+    public void createReminderAlertDialog(){
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        Bundle extras = getIntent().getExtras();
+        String titleString = extras.getString("title", "Title");
+        String contentString = extras.getString("body", "Body");
+        String issuerString = "From: " + extras.getString("issuer", "Issuer");
+        String distanceString = "Distance: " + extras.getString("distance", "Distance")+" M";
+        int id = Integer.parseInt(extras.getString("id"));
+
+        final TextView title = new TextView(this);
+        final TextView content = new TextView(this);
+        final TextView issuer = new TextView(this);
+        final TextView distance = new TextView(this);
+        title.setText(titleString);
+        content.setText(contentString);
+        issuer.setText(issuerString);
+        distance.setText(distanceString);
+        title.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+        content.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+        issuer.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+        distance.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+
+        layout.addView(title);
+        layout.addView(content);
+        layout.addView(issuer);
+        layout.addView(distance);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("User Reminder Request")
+                .setView(layout)
+                .setPositiveButton("Accept", (dialog1, which) -> {
+                    acceptUserReminder(id, OnitApplication.instance.getAccountManager().username);
+
+                })
+                .setNegativeButton("Decline", (dialog1, which) -> {
+                    dialog1.cancel();
+                }).show();
+    }
+
+    public void acceptUserReminder(int id, String username){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = Constants.API_ACCEPT_USER_REMINDER+"?username="+username+"&id="+id;
+        StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+            Toast.makeText(this, "Accepted User Reminder", Toast.LENGTH_SHORT).show();
+        }, error -> {
+            Toast.makeText(this, "Failed to accept. Try again from user reminder page", Toast.LENGTH_LONG).show();
+        });
+        queue.add(request);
     }
 
 
