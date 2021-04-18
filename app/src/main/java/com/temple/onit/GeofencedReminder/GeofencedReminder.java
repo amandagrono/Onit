@@ -15,6 +15,7 @@ public class GeofencedReminder extends Reminder {
     public GeofencedReminder(LatLng latLng, String title, String content, double radius){
         super(title, content, radius);
         this.location = latLng;
+        this.setReminderTitle("");
     }
 
     public void setLocation(LatLng latLng){

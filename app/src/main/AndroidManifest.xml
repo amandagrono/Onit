@@ -67,7 +67,7 @@
             android:value="@string/map_key" />
 
         <activity android:name=".GeofencedReminder.GeofencedReminderActivity" />
-        <activity android:name=".ProximityReminderActivity" />
+        <activity android:name=".userreminder.ProximityReminderActivity" />
         <activity android:name=".Alarms.SmartAlarmActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
