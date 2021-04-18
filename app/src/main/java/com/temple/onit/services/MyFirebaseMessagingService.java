@@ -26,6 +26,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         super.onNewToken(s);
 
         //Post request to change token in server
-        OnitApplication.instance.getAccountManager().updateFBToken(s, this);
+        OnitApplication.instance.getAccountManager().updateFBToken(s, this, OnitApplication.instance.getAccountManager().username);
     }
 }

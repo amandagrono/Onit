@@ -31,7 +31,7 @@ public class Constants {
     public static final int HOUR_IN_MILLIS = 3600000;
     public static final int MINUTE_IN_MILLIS = 60000;
 
-    public static final String URL = "http://192.168.1.235:3000";
+    public static final String URL = "http://100.25.118.238:8000";
 
     /* API ENDPOINTS FOR ACCOUNTS */
     public static final String API_ADD_USER = URL+"/add_user";

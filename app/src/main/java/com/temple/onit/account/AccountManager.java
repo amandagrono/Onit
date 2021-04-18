@@ -60,7 +60,7 @@ public class AccountManager {
             setLoggedIn(true);
             FirebaseMessaging.getInstance().getToken().addOnSuccessListener(s -> {
                 Log.d("Firebase Token Login", s);
-                updateFBToken(s, context);
+                updateFBToken(s, context, username);
             });
             if(listener != null){
                 listener.onLoginResponse(true);
@@ -91,16 +91,17 @@ public class AccountManager {
         return true;
     }
     public void logout(Context context){
+        String temp = this.username;
         this.username = "";
         this.loggedIn = false;
         preferences.edit().putString("Token", "").apply();
-        updateFBToken(" ", context);
+        updateFBToken("notoken", context, temp);
 
     }
 
-    public void updateFBToken(String token, Context context){
+    public void updateFBToken(String token, Context context, String user){
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = Constants.API_UPDATE_FIREBASE_TOKEN+"?username="+username+"&firebase_token="+token;
+        String url = Constants.API_UPDATE_FIREBASE_TOKEN+"?username="+user+"&firebase_token="+token;
         Log.d("UpdateFB", url);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             Log.d("UpdateFBToken", "Successfully updated firebase token association");
