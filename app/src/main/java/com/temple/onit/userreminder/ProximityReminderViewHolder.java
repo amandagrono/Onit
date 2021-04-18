@@ -17,6 +17,7 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
     private TextView titleTV;
     private TextView userTV;
     private ImageButton deleteButton;
+    private ImageButton acceptButton;
     ReminderListListener listListener;
 
     public ProximityReminderViewHolder(@NonNull View itemView, ReminderListListener listener) {
@@ -24,6 +25,7 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
         titleTV = itemView.findViewById(R.id.reminder_title_textview);
         userTV = itemView.findViewById(R.id.other_user_tv);
         deleteButton = itemView.findViewById(R.id.delete_reminder_button);
+        acceptButton = itemView.findViewById(R.id.accept_reminder_button);
         this.listListener = listener;
     }
     public void bind(ProximityReminder reminder){
@@ -38,10 +40,18 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
         deleteButton.setOnClickListener(v -> {
             listListener.onDelete(reminder);
         });
+        if(OnitApplication.instance.getAccountManager().username.equals(reminder.getTarget()) && !reminder.isAccepted()){
+            acceptButton.setVisibility(View.VISIBLE);
+            acceptButton.setOnClickListener(v ->{
+                listListener.onAccept(reminder);
+            });
+        }
+
     }
 
 
     public interface ReminderListListener{
         void onDelete(ProximityReminder reminder);
+        void onAccept(ProximityReminder reminder);
     }
 }

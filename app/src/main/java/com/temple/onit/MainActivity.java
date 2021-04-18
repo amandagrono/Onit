@@ -32,6 +32,7 @@ import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.account.AccountManager;
 import com.temple.onit.services.LocationService;
+import com.temple.onit.userreminder.ProximityReminderActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             launchSmartAlarm(intent);
         });
         newProximityReminderButton.setOnClickListener(v->{
-
+            Intent intent = new Intent(MainActivity.this, ProximityReminderActivity.class);
+            launchProximityReminder(intent);
         });
         newGeofencedReminderButton.setOnClickListener(v->{
             Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         startActivity(intent);
     }
     public void launchProximityReminder(Intent intent){
-
+        startActivity(intent);
     }
     public void launchGeofencedReminder(Intent intent){
         startActivity(intent);

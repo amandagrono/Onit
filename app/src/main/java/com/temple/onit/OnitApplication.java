@@ -25,6 +25,7 @@ public class OnitApplication extends Application {
         geofenceReminderManager = new GeofenceReminderManager(this);
         accountManager = new AccountManager(this);
         createNotificationChannelAlarm();
+        createNotificationChannelUserReminder();
     }
 
     public AccountManager getAccountManager() {
@@ -45,6 +46,17 @@ public class OnitApplication extends Application {
 
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
+        }
+    }
+    private void createNotificationChannelUserReminder(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel reminderChannel = new NotificationChannel(
+                    "User Reminder",
+                    "User Reminder Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(reminderChannel);
         }
     }
 

@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import java.util.UUID;
 
 public class Reminder {
-    private String id = UUID.randomUUID().toString();
+    private String idString = UUID.randomUUID().toString();
     private double radius;
     private String reminderTitle;
     private String reminderContent;
@@ -37,7 +37,7 @@ public class Reminder {
     }
 
     public String getId(){
-        return  id;
+        return  idString;
     }
 
     @Override
@@ -49,6 +49,6 @@ public class Reminder {
             return false;
         }
         Reminder other = (Reminder) obj;
-        return other.id.equals(this.id);
+        return other.idString.equals(this.idString);
     }
 }
