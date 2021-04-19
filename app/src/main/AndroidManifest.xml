@@ -20,6 +20,11 @@
             android:theme="@style/Theme.Onit"
             android:usesCleartextTraffic="true">
         <activity android:name=".authentication.AuthenticationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".Alarms.list.AlarmListActivity"/>
         <activity
@@ -72,11 +77,11 @@
         <activity android:name=".userreminder.ProximityReminderActivity"/>
         <activity android:name=".Alarms.SmartAlarmActivity"/>
         <activity android:name=".MainActivity">
-            <intent-filter>
+           <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            </intent-filter>-->
         </activity>
     </application>
 

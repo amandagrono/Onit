@@ -1,5 +1,6 @@
 package com.temple.onit.authentication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.temple.onit.MainActivity;
 import com.temple.onit.R;
 import com.temple.onit.databinding.FragmentRegisterBinding;
 
@@ -52,6 +55,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
         }
+
     }
 
     @Override
@@ -131,9 +135,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        int id = view.getId();
+        int id = v.getId();
         switch (id){
-            case R.id._registerButton:
+            case R.id._registerButton :
                 if (canRegister) {
                     emailRegister(fragmentRegisterBinding.RegisterEmailEditText.getText().toString(),
                             fragmentRegisterBinding.RegisterPasswordEditText.getText().toString());
@@ -157,7 +161,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     FirebaseUser user = mAuth.getCurrentUser();
-                    // navigate to next activity
+                    launchMain();
                 } else {
                     Objects.requireNonNull(task.getException()).printStackTrace();
                     Toast.makeText(getContext(), "REGISTRATION FAILED, USER MAY ALREADY EXIST", Toast.LENGTH_SHORT).show();
@@ -165,5 +169,20 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
                 }
             }
         });
+
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        fragmentRegisterBinding = null;
+    }
+
+
+
+    public void launchMain(){
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        startActivity(intent);
     }
 }

@@ -21,7 +21,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.temple.onit.Alarms.SmartAlarmActivity;
@@ -46,12 +50,18 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
     private Button newProximityReminderButton;
     private Button newGeofencedReminderButton;
     private Button loginButton;
+    private FirebaseUser account;
+    private static final String PASSWORD = "password";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        account = FirebaseAuth.getInstance().getCurrentUser();
+        OnitApplication.instance.getAccountManager().regularLogin(account.getUid(), PASSWORD , this);
+        Log.i("loginAccountManager", "account " + account.getUid() + " pass: " + PASSWORD);
 
         if(getIntent().getExtras() != null){
             String status = getIntent().getStringExtra("status");

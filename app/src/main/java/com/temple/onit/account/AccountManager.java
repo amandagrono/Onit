@@ -67,6 +67,7 @@ public class AccountManager {
             }
         }, error -> {
             Log.d("Error: ", error.toString());
+            error.printStackTrace();
             Toast.makeText(context, "Failed to log in", Toast.LENGTH_SHORT).show();
         });
         queue.add(stringRequest);

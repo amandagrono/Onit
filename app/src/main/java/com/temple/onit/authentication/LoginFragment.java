@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.*;
+import com.temple.onit.MainActivity;
+import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.databinding.FragmentLoginBinding;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +37,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     private FirebaseUser user;
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount account;
-
+    private static final String PASSWORD = "password";
+    private View root;
     private static final int SIGN_IN_CHANNEL = 9001;
 
     private void googleSignIn(){
@@ -67,7 +70,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                         if (task.isSuccessful()){
                             Log.i("google log in", "onComplete: successful log in");
                             user = mAuth.getCurrentUser();
-                            // navigate login
+                            launchMain();
                         }else{
                             Toast.makeText(getContext(), "GOOGLE LOGIN INVALID", Toast.LENGTH_SHORT).show();
                         }
@@ -88,7 +91,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         user = mAuth.getCurrentUser();
-                        // launch next activity
+                        launchMain();
                     } else {
                         Toast.makeText(getContext(), "LOGIN INVALID", Toast.LENGTH_SHORT).show();
                     }
@@ -149,6 +152,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         fragmentLoginBinding = FragmentLoginBinding.inflate(inflater);
         View view = fragmentLoginBinding.getRoot();
+        this.root = view;
 
         return view;
     }
@@ -158,10 +162,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         super.onViewCreated(view, savedInstanceState);
         controller = Navigation.findNavController(view);
         account = GoogleSignIn.getLastSignedInAccount(getActivity());
-
-        if (account != null){
-            // launch next activity
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null){
+            launchMain();
         }
+
         fragmentLoginBinding.RegisterHereTextView.setOnClickListener(this);
         fragmentLoginBinding.LoginButton.setOnClickListener(this);
         fragmentLoginBinding.RegisterHereTextView.setOnClickListener(this);
@@ -178,12 +183,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 controller.navigate(R.id.action_loginFragment2_to_registerFragment2);
                 break;
             case R.id._loginButton:
-                // attempt email/password login
                 emailSignIn(fragmentLoginBinding.LoginEmailEditText.getText().toString(),
                         fragmentLoginBinding.LoginPasswordEditText.getText().toString());
                 break;
             case R.id._googleSignInButton:
-                // attempt google login
                 Log.i("google sign in", "onClick: google");
                 googleSignIn();
                 break;
@@ -194,6 +197,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     public void onDestroyView() {
         super.onDestroyView();
         fragmentLoginBinding = null;
+    }
+
+    public void launchMain(){
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        startActivity(intent);
     }
 
 }
