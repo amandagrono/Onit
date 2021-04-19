@@ -4,6 +4,7 @@
                                                    android:layout_width="match_parent"
                                                    android:layout_height="match_parent"
                                                    tools:context=".authentication.LoginFragment"
+                                                   android:background="@color/colorPrimaryDark"
                                                    android:id="@+id/loginFragment">
     <com.google.android.material.textfield.TextInputLayout android:layout_width="288dp"
                                                            android:layout_height="75dp"
@@ -50,7 +51,7 @@
                                                        app:layout_constraintStart_toStartOf="parent"
                                                        android:layout_marginStart="46dp"
                                                        android:id="@+id/_loginButton"
-                                                       android:background="@color/_Primary" app:cornerRadius="25dp"
+                                                       android:background="@color/colorPrimary" app:cornerRadius="25dp"
                                                        android:onClick="onClick" android:text="@string/Login_Button"
                                                        android:textColor="#FFFFFF"/>
     <TextView
@@ -66,8 +67,8 @@
             android:onClick="onClick"/>
     <ImageView
             android:src="@drawable/icons8_folder"
-            android:layout_width="93dp"
-            android:layout_height="79dp" android:id="@+id/imageView"
+            android:layout_width="95dp"
+            android:layout_height="80dp" android:id="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="155dp"
             android:layout_marginEnd="156dp" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="51dp"
