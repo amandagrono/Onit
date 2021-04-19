@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Login_Button">Login</string>
+    <string name="register_prompt">Register Here...</string>
+    <string name="email_prompt">person123@email.com</string>
+    <string name="Register_Button">Register</string>
+
+    <string name="loginFragmentTag">lf</string>
+    <string name="registerFragmentTag">rf</string>
+
+</resources>
