@@ -15,7 +15,7 @@ public class OnitApplication extends Application {
 
     public static OnitApplication instance;
     private GeofenceReminderManager geofenceReminderManager;
-    private AccountManager accountManager;
+    public AccountManager accountManager;
 
 
     @Override
@@ -23,7 +23,7 @@ public class OnitApplication extends Application {
         super.onCreate();
         instance = this;
         geofenceReminderManager = new GeofenceReminderManager(this);
-        accountManager = new AccountManager(this);
+
         createNotificationChannelAlarm();
         createNotificationChannelUserReminder();
     }

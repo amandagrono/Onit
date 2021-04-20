@@ -20,7 +20,8 @@ public class AccountManager {
     public String username = "";
     public AccountListener listener;
 
-    public AccountManager(Context context){
+    public AccountManager(Context context, AccountListener listener){
+        this.listener = listener;
         preferences = context.getSharedPreferences("Account", Context.MODE_PRIVATE);
         Log.d("AccountManager", "Contains Key" + preferences.contains("Token"));
         if(preferences.contains("Token")){
@@ -114,7 +115,6 @@ public class AccountManager {
 
     public interface AccountListener{
         public void onLoginResponse(boolean loggedIn);
-
     }
 
 }

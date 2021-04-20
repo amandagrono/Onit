@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        OnitApplication.instance.accountManager = new AccountManager(getApplicationContext(), this);
+
         account = FirebaseAuth.getInstance().getCurrentUser();
         OnitApplication.instance.getAccountManager().regularLogin(account.getUid(), PASSWORD , this);
         Log.i("loginAccountManager", "account " + account.getUid() + " pass: " + PASSWORD);
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             }
         }
 
-        OnitApplication.instance.getAccountManager().setListener(this);
+
         newAlarmButton = findViewById(R.id.button_alarm);
         newProximityReminderButton = findViewById(R.id.button_proximity_reminder);
         newGeofencedReminderButton = findViewById(R.id.button_geofenced_reminder);
