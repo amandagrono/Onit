@@ -39,6 +39,10 @@ public class AccountManager {
             setUsername(response);
             setLoggedIn(true);
             listener.onLoginResponse(true);
+            FirebaseMessaging.getInstance().getToken().addOnSuccessListener(s -> {
+                Log.d("Firebase Token Login", s);
+                updateFBToken(s, context, username);
+            });
         }, error -> {
             Log.d("TokenLogin", "Failed to log in with token");
         });
@@ -72,8 +76,22 @@ public class AccountManager {
             Toast.makeText(context, "Failed to log in", Toast.LENGTH_SHORT).show();
         });
         queue.add(stringRequest);
+    }
+
+    public void addUser(AccountListener listener, String username, String password, String confirm, Context context, String email){
+        this.listener = listener;
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = Constants.API_ADD_USER + "?username=" + username + "&password=" + password + "&confirm="+confirm+"&email="+email;
+        StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+            regularLogin(username, password, context);
+        }, error -> {
+
+        });
+        queue.add(request);
 
     }
+
+
     public void setListener(AccountListener listener){
         this.listener = listener;
     }

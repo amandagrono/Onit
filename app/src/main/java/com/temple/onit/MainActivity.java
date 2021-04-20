@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
     private Button newGeofencedReminderButton;
     private Button loginButton;
     private FirebaseUser account;
+    private FirebaseUser user;
     private static final String PASSWORD = "password";
 
 
@@ -61,8 +62,9 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
 
         OnitApplication.instance.accountManager = new AccountManager(getApplicationContext(), this);
 
+
         account = FirebaseAuth.getInstance().getCurrentUser();
-        OnitApplication.instance.getAccountManager().regularLogin(account.getUid(), PASSWORD , this);
+        OnitApplication.instance.getAccountManager().addUser(this, account.getUid(), PASSWORD , PASSWORD, getApplicationContext(), account.getEmail());
         Log.i("loginAccountManager", "account " + account.getUid() + " pass: " + PASSWORD);
 
         if(getIntent().getExtras() != null){
