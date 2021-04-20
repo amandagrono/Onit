@@ -1,4 +1,4 @@
-package com.temple.onit;
+package com.temple.onit.userreminder;
 
 public class ProximityReminderManager {
 }

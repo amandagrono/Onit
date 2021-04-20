@@ -88,7 +88,8 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == 330){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 330) {
             onMapAndPermissionReady();
         }
     }
@@ -134,7 +135,7 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
         this.googleMap = googleMap;
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
-        googleMap.setOnMarkerClickListener(this::onMarkerClick);
+        googleMap.setOnMarkerClickListener(this);
 
         onMapAndPermissionReady();
     }

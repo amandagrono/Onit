@@ -21,7 +21,13 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.temple.onit.Constants;
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
+import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 
 public class LocationService extends Service {
@@ -51,7 +57,8 @@ public class LocationService extends Service {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-
+                updateLocation(OnitApplication.instance.getAccountManager().username, location);
+                Log.d("LocationUpdate", "OnLocationChangeCalled");
             }
 
             @Override
@@ -71,6 +78,16 @@ public class LocationService extends Service {
         };
 
     }
+    private void updateLocation(String username, Location location){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = Constants.API_UPDATE_USER_REMINDER + "?username="+username+"&currentLatitude="+location.getLatitude()+"&currentLongitude="+location.getLongitude();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+            Log.d("LocationUpdate", "Successfully Sent Location");
+        }, error -> {
+            Log.d("LocationUpdate", error.toString());
+        });
+        queue.add(stringRequest);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -80,7 +97,7 @@ public class LocationService extends Service {
             // GPS is the only really useful provider here, since we need
             // high fidelity meter-level accuracy
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    30*60*1000, //send location updates every 30 seconds
+                    5*1000, //send location updates every 5 seconds
                     10,
                     locationListener);
         }

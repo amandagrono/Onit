@@ -14,13 +14,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.temple.onit.Alarms.SmartAlarmActivity;
@@ -31,6 +36,7 @@ import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.account.AccountManager;
 import com.temple.onit.services.LocationService;
+import com.temple.onit.userreminder.ProximityReminderActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
     private Button newProximityReminderButton;
     private Button newGeofencedReminderButton;
     private Button loginButton;
+    private FirebaseUser account;
+    private FirebaseUser user;
+    private static final String PASSWORD = "password";
 
 
     @Override
@@ -51,11 +60,23 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        OnitApplication.instance.accountManager = new AccountManager(getApplicationContext(), this);
+
+
+        account = FirebaseAuth.getInstance().getCurrentUser();
+        OnitApplication.instance.getAccountManager().addUser(this, account.getUid(), PASSWORD , PASSWORD, getApplicationContext(), account.getEmail());
+        Log.i("loginAccountManager", "account " + account.getUid() + " pass: " + PASSWORD);
+
         if(getIntent().getExtras() != null){
-            Toast.makeText(this, getIntent().getStringExtra("testdata"), Toast.LENGTH_SHORT).show();
+            String status = getIntent().getStringExtra("status");
+            if(status != null){
+                if(status.equals("17")){
+                    createReminderAlertDialog();
+                }
+            }
         }
 
-        OnitApplication.instance.getAccountManager().setListener(this);
+
         newAlarmButton = findViewById(R.id.button_alarm);
         newProximityReminderButton = findViewById(R.id.button_proximity_reminder);
         newGeofencedReminderButton = findViewById(R.id.button_geofenced_reminder);
@@ -66,7 +87,8 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             launchSmartAlarm(intent);
         });
         newProximityReminderButton.setOnClickListener(v->{
-
+            Intent intent = new Intent(MainActivity.this, ProximityReminderActivity.class);
+            launchProximityReminder(intent);
         });
         newGeofencedReminderButton.setOnClickListener(v->{
             Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);
@@ -112,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
                     .setPositiveButton("Enter", (dialog1, which) -> {
                         if(username.getText().toString().equals("") || password.getText().toString().equals("")){
                             Toast.makeText(context, "Please Enter A Username", Toast.LENGTH_SHORT).show();
+
                         }
                         else{
                             OnitApplication.instance.getAccountManager().regularLogin(username.getText().toString(), password.getText().toString(), context);
@@ -138,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         startActivity(intent);
     }
     public void launchProximityReminder(Intent intent){
-
+        startActivity(intent);
     }
     public void launchGeofencedReminder(Intent intent){
         startActivity(intent);
@@ -177,6 +200,57 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             e.printStackTrace();
         }
 
+    }
+    public void createReminderAlertDialog(){
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        Bundle extras = getIntent().getExtras();
+        String titleString = extras.getString("title", "Title");
+        String contentString = extras.getString("body", "Body");
+        String issuerString = "From: " + extras.getString("issuer", "Issuer");
+        String distanceString = "Distance: " + extras.getString("distance", "Distance")+" M";
+        int id = Integer.parseInt(extras.getString("id"));
+
+        final TextView title = new TextView(this);
+        final TextView content = new TextView(this);
+        final TextView issuer = new TextView(this);
+        final TextView distance = new TextView(this);
+        title.setText(titleString);
+        content.setText(contentString);
+        issuer.setText(issuerString);
+        distance.setText(distanceString);
+        title.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+        content.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+        issuer.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+        distance.setGravity(LinearLayout.TEXT_ALIGNMENT_CENTER);
+
+        layout.addView(title);
+        layout.addView(content);
+        layout.addView(issuer);
+        layout.addView(distance);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("User Reminder Request")
+                .setView(layout)
+                .setPositiveButton("Accept", (dialog1, which) -> {
+                    acceptUserReminder(id, OnitApplication.instance.getAccountManager().username);
+
+                })
+                .setNegativeButton("Decline", (dialog1, which) -> {
+                    dialog1.cancel();
+                }).show();
+    }
+
+    public void acceptUserReminder(int id, String username){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = Constants.API_ACCEPT_USER_REMINDER+"?username="+username+"&id="+id;
+        StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+            Toast.makeText(this, "Accepted User Reminder", Toast.LENGTH_SHORT).show();
+        }, error -> {
+            Toast.makeText(this, "Failed to accept. Try again from user reminder page", Toast.LENGTH_LONG).show();
+        });
+        queue.add(request);
     }
 
 

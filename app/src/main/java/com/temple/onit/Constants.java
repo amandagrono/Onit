@@ -31,7 +31,7 @@ public class Constants {
     public static final int HOUR_IN_MILLIS = 3600000;
     public static final int MINUTE_IN_MILLIS = 60000;
 
-    public static final String URL = "http://192.168.1.235:3000";
+    public static final String URL = "http://192.168.1.235:8000";
 
     /* API ENDPOINTS FOR ACCOUNTS */
     public static final String API_ADD_USER = URL+"/add_user";
@@ -45,6 +45,7 @@ public class Constants {
     public static final String API_GET_USER_REMINDERS = URL+"/get_user_reminder";
     public static final String API_DELETE_USER_REMINDER = URL+"/delete_user_reminder";
     public static final String API_UPDATE_USER_REMINDER = URL+"/user_reminder_update";
+    public static final String API_ACCEPT_USER_REMINDER = URL+"/accept_user_reminder";
 
     /* API ENDPOINTS FOR GEOFENCED REMINDERS */
     public static final String API_ADD_GEOFENCED_REMINDER = URL+"/geo_reminder";

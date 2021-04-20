@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.temple.onit">
+          package="com.temple.onit">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
-        android:name=".OnitApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Onit"
-        android:usesCleartextTraffic="true"
-        >
-        <activity android:name=".Alarms.list.AlarmListActivity" />
-        <activity android:name=".Alarms.AlarmViewActivity"
-            android:launchMode="singleTask"/>
+            android:name=".OnitApplication"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.Onit"
+            android:usesCleartextTraffic="true">
+        <activity android:name=".authentication.AuthenticationActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".Alarms.list.AlarmListActivity"/>
+        <activity
+                android:name=".Alarms.AlarmViewActivity"
+                android:launchMode="singleTask"/>
 
         <receiver android:name=".Alarms.AlarmBroadcastReceiver">
             <intent-filter>
@@ -31,50 +38,50 @@
         </receiver>
 
         <service
-            android:name=".Alarms.services.RescheduleSmartAlarmService"
-            android:enabled="true"
-            android:exported="false" />
+                android:name=".Alarms.services.RescheduleSmartAlarmService"
+                android:enabled="true"
+                android:exported="false"/>
         <service
-            android:name=".Alarms.services.SmartAlarmService"
-            android:enabled="true"
-            android:exported="false" />
+                android:name=".Alarms.services.SmartAlarmService"
+                android:enabled="true"
+                android:exported="false"/>
 
-        <activity android:name=".GeofencedReminder.NewGeofencedReminderActivity" />
+        <activity android:name=".GeofencedReminder.NewGeofencedReminderActivity"/>
 
         <receiver
-            android:name=".GeofencedReminder.GeofenceBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true" />
+                android:name=".GeofencedReminder.GeofenceBroadcastReceiver"
+                android:enabled="true"
+                android:exported="true"/>
 
         <service
-            android:name=".services.GeofenceTransitionsIntentService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+                android:name=".services.GeofenceTransitionsIntentService"
+                android:exported="true"
+                android:permission="android.permission.BIND_JOB_SERVICE"/>
         <service
-            android:name=".services.LocationService"
-            android:enabled="true"
-            android:exported="true" />
+                android:name=".services.LocationService"
+                android:enabled="true"
+                android:exported="true"/>
         <service
-            android:name=".services.MyFirebaseMessagingService"
-            android:exported="false">
+                android:name=".services.MyFirebaseMessagingService"
+                android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/map_key" />
+                android:name="com.google.android.geo.API_KEY"
+                android:value="@string/map_key"/>
 
-        <activity android:name=".GeofencedReminder.GeofencedReminderActivity" />
-        <activity android:name=".ProximityReminderActivity" />
-        <activity android:name=".Alarms.SmartAlarmActivity" />
+        <activity android:name=".GeofencedReminder.GeofencedReminderActivity"/>
+        <activity android:name=".userreminder.ProximityReminderActivity"/>
+        <activity android:name=".Alarms.SmartAlarmActivity"/>
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+           <!-- <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>-->
         </activity>
     </application>
 

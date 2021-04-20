@@ -71,6 +71,9 @@ public class GeofenceReminderManager {
                         List<GeofencedReminder> tempList = getAll();
                         tempList.add(geofencedReminder);
                         saveAll(tempList);
+                        if(OnitApplication.instance.getAccountManager().loggedIn){
+                            addToServer(geofencedReminder);
+                        }
                         activity.onSuccess();
 
                     })
@@ -83,6 +86,21 @@ public class GeofenceReminderManager {
         }
 
 
+    }
+    public void addToServer(GeofencedReminder reminder){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = Constants.API_ADD_GEOFENCED_REMINDER+"?username=" + OnitApplication.instance.getAccountManager().username +
+                "&latitude=" + reminder.getLatLng().latitude +
+                "&longitude=" + reminder.getLatLng().longitude +
+                "&distance=" + reminder.getRadius() +
+                "&title=" + reminder.getReminderTitle() +
+                "&body=" + reminder.getReminderContent();
+        StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+            Log.d("Geofence", "Successfully added geofence to server");
+        }, error -> {
+            Log.d("Geofence", "Failed to add geofence to server");
+        });
+        queue.add(request);
     }
     public void remove(GeofencedReminder geofencedReminder, Context context, RemoveReminderInterface activity){
         geofencingClient.removeGeofences(CollectionsKt.listOf(geofencedReminder.getId()))
@@ -100,7 +118,9 @@ public class GeofenceReminderManager {
                     Log.d("Failed to remove geofence", "Failed to remove geofence");
                     activity.onFailure(GeofenceErrors.getErrorString(context, e));
                 });
-        removeFromServer(geofencedReminder);
+        if(OnitApplication.instance.getAccountManager().loggedIn){
+            removeFromServer(geofencedReminder);
+        }
 
     }
     private void removeFromServer(GeofencedReminder reminder){
