@@ -1,5 +1,6 @@
 package com.temple.onit.userreminder;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -8,6 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.dataclasses.ProximityReminder;
@@ -28,15 +34,32 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
         acceptButton = itemView.findViewById(R.id.accept_reminder_button);
         this.listListener = listener;
     }
-    public void bind(ProximityReminder reminder){
+    public void bind(ProximityReminder reminder, String email){
         titleTV.setText(reminder.getReminderTitle());
+        userTV.setText(email);
+
+
+    }
+    public void setup(ProximityReminder reminder, Context context){
+
+        String url = Constants.API_GET_EMAIL_FROM_USER + "?username=";
+
         String username = OnitApplication.instance.getAccountManager().username;
         if(username.equals(reminder.getTarget())){
-            userTV.setText(reminder.getUser());
+            url = url + reminder.getUser();
         }
         else{
-            userTV.setText(reminder.getTarget());
+            url = url + reminder.getTarget();
         }
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
+            bind(reminder, response);
+        }, error -> {
+
+        });
+        queue.add(request);
+
         deleteButton.setOnClickListener(v -> {
             listListener.onDelete(reminder);
         });
@@ -46,7 +69,6 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
                 listListener.onAccept(reminder);
             });
         }
-
     }
 
 

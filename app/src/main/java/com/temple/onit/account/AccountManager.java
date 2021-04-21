@@ -56,7 +56,7 @@ public class AccountManager {
 
     public void regularLogin(String username, String password, Context context){
         RequestQueue queue = Volley.newRequestQueue(context);
-
+        Log.d("Regular Login: ", "Username: " + username+ " Password: " + password);
         String url = Constants.API_LOGIN + "?username="+username+"&password="+password;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             Log.d("Response: ", response);
@@ -80,6 +80,7 @@ public class AccountManager {
 
     public void addUser(AccountListener listener, String username, String password, String confirm, Context context, String email){
         this.listener = listener;
+        Log.d("AddUser", "Username: " + username+ " Password: " + password);
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = Constants.API_ADD_USER + "?username=" + username + "&password=" + password + "&confirm="+confirm+"&email="+email;
         StringRequest request = new StringRequest(Request.Method.POST, url, response -> {

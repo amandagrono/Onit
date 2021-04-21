@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
 
         if(getIntent().getExtras() != null){
             String status = getIntent().getStringExtra("status");
-            if(status != null){
+            if(getIntent().getExtras() != null){
+                Log.d("Intent Keys", getIntent().getExtras().keySet().toString());
                 if(status.equals("17")){
                     createReminderAlertDialog();
                 }
@@ -106,6 +107,12 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         Intent serviceIntent = new Intent(this, LocationService.class);
         startForegroundService(serviceIntent);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     private void changeToLogIn(){
@@ -148,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         });
     }
 
+
+
     private void changeToLogOut(){
         loginButton.setText("Logout");
         loginButton.setOnClickListener(v -> {
@@ -174,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             Log.d("GeofenceResponse", response);
             addNewGeofenceReminders(response);
         }, error -> {
-
+            Log.d("GeofenceResponse error", error.toString());
         });
         queue.add(stringRequest);
     }
