@@ -1,5 +1,6 @@
 package com.temple.onit.userreminder;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,12 @@ public class ProximityReminderAdapter extends RecyclerView.Adapter<ProximityRemi
 
     ProximityReminderViewHolder.ReminderListListener listener;
     ArrayList<ProximityReminder> reminderList;
+    Context context;
 
-    public ProximityReminderAdapter(ProximityReminderViewHolder.ReminderListListener listener, ArrayList<ProximityReminder> reminderList){
+    public ProximityReminderAdapter(ProximityReminderViewHolder.ReminderListListener listener, ArrayList<ProximityReminder> reminderList, Context context){
         this.listener = listener;
         this.reminderList = reminderList;
+        this.context = context;
     }
 
 
@@ -32,7 +35,7 @@ public class ProximityReminderAdapter extends RecyclerView.Adapter<ProximityRemi
 
     @Override
     public void onBindViewHolder(@NonNull ProximityReminderViewHolder holder, int position) {
-        holder.bind(reminderList.get(position));
+        holder.setup(reminderList.get(position), context);
     }
 
     @Override
