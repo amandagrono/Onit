@@ -1,5 +1,9 @@
 package com.temple.onit.dashboard;
 
+import android.content.DialogInterface;
+import android.view.Menu;
+import android.view.View;
+import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,11 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.temple.onit.Alarms.database.SmartAlarmRepository;
 import com.temple.onit.Alarms.list.AlarmListActivity;
 import com.temple.onit.Constants;
 import com.temple.onit.GeofencedReminder.GeofenceReminderManager;
@@ -29,6 +29,8 @@ import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.account.AccountManager;
+import com.temple.onit.authentication.AuthenticationActivity;
+import com.temple.onit.databinding.ActivityDashboardBinding;
 import com.temple.onit.services.LocationService;
 import com.temple.onit.userreminder.ProximityReminderActivity;
 
@@ -36,9 +38,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface {
+public class DashboardActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface, View.OnClickListener{
 
     private Button newAlarmButton;
     private Button newProximityReminderButton;
@@ -47,12 +50,29 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     private FirebaseUser account;
     private FirebaseUser user;
     private static final String PASSWORD = "password";
+    private androidx.appcompat.widget.Toolbar toolbar;
+    ActivityDashboardBinding activityDashboardBinding;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        activityDashboardBinding = ActivityDashboardBinding.inflate(getLayoutInflater());
+        View view = activityDashboardBinding.getRoot();
+        setContentView(view);
+
+        activityDashboardBinding.buttonAbout.findViewById(R.id._settingsConstraintLayout).setOnClickListener(this);
+        activityDashboardBinding.buttonAbout.findViewById(R.id._logoutTextView).setOnClickListener(this);
+        activityDashboardBinding.buttonAbout.setOnClickListener(this);
+        activityDashboardBinding.buttonAlarm.setOnClickListener(this);
+        activityDashboardBinding.buttonGeofencedReminder.setOnClickListener(this);
+        activityDashboardBinding.buttonProximityReminder.setOnClickListener(this);
+        activityDashboardBinding.buttonProximityReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("clicked", "onClick: proximity");
+            }
+        });
 
         OnitApplication.instance.accountManager = new AccountManager(getApplicationContext(), this);
 
@@ -71,7 +91,8 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         }
 
 
-        newAlarmButton = findViewById(R.id.button_alarm);
+
+        /*newAlarmButton = findViewById(R.id.button_alarm);
         newProximityReminderButton = findViewById(R.id.button_proximity_reminder);
         newGeofencedReminderButton = findViewById(R.id.button_geofenced_reminder);
         loginButton = findViewById(R.id.loginButton);
@@ -87,14 +108,14 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         newGeofencedReminderButton.setOnClickListener(v->{
             Intent intent = new Intent(DashboardActivity.this, GeofencedReminderActivity.class);
             launchGeofencedReminder(intent);
-        });
+        });*/
 
-        if(OnitApplication.instance.getAccountManager().loggedIn){
+       /* if(OnitApplication.instance.getAccountManager().loggedIn){
             changeToLogOut();
         }
         else{
             changeToLogIn();
-        }
+        }*/
 
 
         Intent serviceIntent = new Intent(this, LocationService.class);
@@ -265,4 +286,83 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     public void onFailure(String error) {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.dash_menu, menu);
+        return true;
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        switch (id){
+            case R.id._alarmConstraintLayout:
+                launchSmartAlarm(new Intent(getApplicationContext(), AlarmListActivity.class));
+                Log.i("clicked", "onClick: alarm");
+                break;
+            case R.id._geoConstraintLayout:
+                launchGeofencedReminder(new Intent(this, ProximityReminderActivity.class));
+                Log.i("clicked", "onClick: alarm");
+                break;
+            case R.id._proximityConstraintLayout:
+                launchProximityReminder(new Intent(this, GeofencedReminderActivity.class));
+                Log.i("clicked", "onClick: alarm");
+                break;
+            case R.id._logoutTextView:
+                alert();
+                break;
+                // call remove
+
+        }
+    }
+
+    public void logout(){
+        FirebaseAuth.getInstance().signOut();
+        SmartAlarmRepository smartAlarmRepository = new SmartAlarmRepository(getApplication());
+        OnitApplication.instance.accountManager.logout(getApplicationContext());
+        smartAlarmRepository.deleteAll();
+        GeofenceReminderManager manager = new GeofenceReminderManager(getApplicationContext());
+        ArrayList<GeofencedReminder> geofencedReminders = (ArrayList<GeofencedReminder>) manager.getAll();
+        geofencedReminders.forEach(s -> {
+            manager.remove(s, getApplicationContext(), new GeofenceReminderManager.RemoveReminderInterface() {
+                @Override
+                public void onSuccess() {
+                    // go back to main
+                    Log.i("logout", "onFailure: logout succeeded");
+
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    // failed to logout
+                    Log.i("logout", "onFailure: logout failed");
+                }
+            });
+        });
+        Intent intent = new Intent(getApplicationContext(), AuthenticationActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void alert(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.logout_alert)
+                .setPositiveButton(R.string.logout_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        logout();
+                    }
+                })
+                .setNegativeButton(R.string.logout_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
 }

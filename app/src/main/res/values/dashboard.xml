@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="about_prompt">ABOUT</string>
+    <string name="about_prompt">SETTINGS</string>
     <string name="alarm_prompt">ALARMS</string>
     <string name="geo_prompt">GEO REMINDERS</string>
     <string name="proximity_prompt">PROXIMITY REMINDERS</string>
@@ -9,5 +9,11 @@
     <string name="blank"></string>
     <string name="nearest_reminder">NEAREST REMINDER</string>
     <string name="hello_user_prompt">HELLO</string>
-    <string name="dashboard_text">DASHBOARD</string>
+    <string name="dashboard_text">YOUR DASHBOARD</string>
+    <string name="prompt_location">LOCATION</string>
+    <string name="prompt_service">BACKGROUND SERVICE</string>
+    <string name="prompt_logout">SIGN OUT</string>
+    <string name="logout_alert">Are you sure you want to logout? doing so will remove all of your alarms</string>
+    <string name="logout_confirm">Confirm</string>
+    <string name="logout_cancel">Cancel</string>
 </resources>

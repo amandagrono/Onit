@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="match_parent">
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="wrap_content"
+                                                   android:layout_height="wrap_content" android:onClick="onClick"
+                                                   android:id="@+id/_geoConstraintLayout">
     <com.google.android.material.card.MaterialCardView
-            android:layout_width="182dp"
-            android:layout_height="300dp"
-            app:cardCornerRadius="15dp" app:cardElevation="5dp"
-            android:background="#FFFFFF" app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:cardBackgroundColor="#E2E2E2"
+            app:cardCornerRadius="10dp" app:cardElevation="5dp"
+            app:cardUseCompatPadding="true" android:padding="10dp">
         <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" android:clickable="true">
+                android:layout_width="wrap_content"
+                android:layout_height="350dp">
 
             <TextView
                     android:text="@string/geo_prompt"
@@ -20,9 +23,9 @@
                     android:layout_height="48dp" android:id="@+id/textView"
                     android:gravity="center"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="41dp" android:layout_marginEnd="36dp"
+                    android:layout_marginTop="60dp" android:layout_marginEnd="36dp"
                     app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="36dp"/>
+                    android:layout_marginStart="36dp" app:layout_constraintHorizontal_bias="1.0"/>
             <TextView
                     android:text="0"
                     android:layout_width="wrap_content"
@@ -41,7 +44,7 @@
             <TextView
                     android:layout_width="177dp"
                     android:layout_height="8dp" android:id="@+id/textView4"
-                    android:background="#F8F8F8"
+                    android:background="#C6C6C6"
                     app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/textView3"/>
@@ -69,7 +72,24 @@
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="62dp"
                     app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="12dp"
                     app:layout_constraintHorizontal_bias="0.333" android:layout_marginTop="3dp"
-                    app:layout_constraintTop_toBottomOf="@+id/textView6"/>
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" app:layout_constraintVertical_bias="0.2"/>
+            <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp" app:srcCompat="@drawable/map_black_24dp"
+                    android:id="@+id/imageView4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="5dp" app:layout_constraintEnd_toStartOf="@+id/imageView5"
+                    android:layout_marginEnd="91dp" android:layout_marginBottom="17dp"
+                    app:layout_constraintBottom_toTopOf="@+id/textView"/>
+            <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp" app:srcCompat="@drawable/launch_black_24dp"
+                    android:id="@+id/imageView5"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp" android:layout_marginBottom="17dp"
+                    app:layout_constraintBottom_toTopOf="@+id/textView"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

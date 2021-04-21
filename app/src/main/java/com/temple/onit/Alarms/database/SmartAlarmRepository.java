@@ -35,6 +35,12 @@ public class SmartAlarmRepository {
         });
     }
 
+    public void deleteAll(){
+        SmartAlarmDatabase.databaseWriteExecutor.execute(() -> {
+            alarmDao.deleteAll();
+        });
+    }
+
     public LiveData<List<SmartAlarm>> getAlarmsLiveData(){
         return alarmsLiveData;
     }

@@ -1,71 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".dashboard.DashboardActivity"
-    android:orientation="vertical">
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   tools:context=".dashboard.DashboardActivity"
+                                                   android:orientation="vertical" android:onClick="onClick"
+>
 
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical">
-            <com.temple.onit.dashboard.views.DashboardProximityView android:layout_width="153dp"
-                                                                    android:layout_height="250dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1.0" app:layout_constraintVertical_bias="0.0">
+        <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
+                                                           android:layout_height="wrap_content"
+                                                           android:orientation="vertical">
+            <com.temple.onit.dashboard.views.DashboardProximityView android:layout_width="wrap_content"
+                                                                    android:layout_height="wrap_content"
                                                                     android:id="@+id/button_proximity_reminder"
                                                                     app:layout_constraintTop_toTopOf="parent"
-                                                                    android:layout_marginTop="253dp"
-                                                                    android:layout_marginEnd="16dp"
+                                                                    android:layout_marginTop="340dp"
+                                                                    android:onClick="onClick"
+                                                                    android:layout_marginEnd="9dp"
                                                                     app:layout_constraintEnd_toEndOf="parent">
             </com.temple.onit.dashboard.views.DashboardProximityView>
-            <com.temple.onit.dashboard.views.DashboardGeoView android:layout_width="153dp"
-                                                              android:layout_height="250dp"
-                                                              android:layout_marginTop="62dp"
+            <com.temple.onit.dashboard.views.DashboardGeoView android:layout_width="wrap_content"
+                                                              android:layout_height="wrap_content"
+                                                              android:id="@+id/button_geofenced_reminder"
+                                                              android:layout_marginTop="85dp"
                                                               app:layout_constraintTop_toBottomOf="@+id/button_proximity_reminder"
-                                                              android:layout_marginEnd="16dp"
-                                                              app:layout_constraintEnd_toEndOf="parent"
                                                               app:layout_constraintBottom_toBottomOf="parent"
-                                                              android:id="@+id/button_geofenced_reminder">
+                                                              android:layout_marginBottom="45dp"
+                                                              android:onClick="onClick"
+                                                              app:layout_constraintVertical_bias="0.0"
+                                                              android:layout_marginEnd="9dp"
+                                                              app:layout_constraintEnd_toEndOf="parent"
+                                                              android:layout_marginStart="4dp"
+                                                              app:layout_constraintStart_toEndOf="@+id/button_about">
             </com.temple.onit.dashboard.views.DashboardGeoView>
-            <com.temple.onit.dashboard.views.DashboardAboutView android:layout_width="153dp"
-                                                                android:layout_height="250dp"
-                                                                app:layout_constraintStart_toStartOf="parent"
-                                                                android:layout_marginStart="32dp"
+            <com.temple.onit.dashboard.views.DashboardAboutView android:layout_width="wrap_content"
+                                                                android:layout_height="wrap_content"
                                                                 android:layout_marginTop="54dp"
                                                                 app:layout_constraintTop_toBottomOf="@+id/button_alarm"
-                                                                app:layout_constraintEnd_toStartOf="@+id/button_proximity_reminder"
-                                                                android:layout_marginEnd="57dp"
                                                                 app:layout_constraintBottom_toBottomOf="parent"
                                                                 android:layout_marginBottom="73dp"
-                                                                android:id="@+id/button_about">
-            </com.temple.onit.dashboard.views.DashboardAboutView>
-            <com.temple.onit.dashboard.views.DashboardAlarmView android:layout_width="153dp"
-                                                                android:layout_height="250dp"
-                                                                android:layout_marginTop="67dp"
-                                                                app:layout_constraintTop_toBottomOf="@+id/textView9"
-                                                                app:layout_constraintStart_toStartOf="parent"
-                                                                android:layout_marginStart="32dp"
+                                                                android:id="@+id/button_about"
+                                                                app:layout_constraintVertical_bias="0.0"
+                                                                android:onClick="onClick"
                                                                 app:layout_constraintEnd_toStartOf="@+id/button_proximity_reminder"
-                                                                android:layout_marginEnd="57dp"
-                                                                android:id="@+id/button_alarm"/>
-            <TextView
-                    android:layout_width="171dp"
-                    android:layout_height="38dp" android:id="@+id/textView8"
-                    android:gravity="center_vertical" android:textSize="22sp" tools:text="@string/hello_user_prompt"
-                    app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="33dp"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="29dp"
-                    android:layout_marginEnd="211dp" app:layout_constraintEnd_toEndOf="parent"/>
+                                                                android:layout_marginEnd="3dp"
+            >
+            </com.temple.onit.dashboard.views.DashboardAboutView>
+            <com.temple.onit.dashboard.views.DashboardAlarmView android:layout_width="wrap_content"
+                                                                android:layout_height="wrap_content"
+                                                                app:layout_constraintStart_toStartOf="parent"
+                                                                android:layout_marginStart="4dp"
+                                                                android:id="@+id/button_alarm"
+                                                                android:layout_marginTop="40dp"
+                                                                app:layout_constraintTop_toBottomOf="@+id/textView9"
+                                                                android:onClick="onClick"
+                                                                app:layout_constraintEnd_toStartOf="@+id/button_proximity_reminder"
+                                                                android:layout_marginEnd="2dp"/>
             <TextView
                     android:text="@string/dashboard_text"
-                    android:layout_width="167dp"
-                    android:layout_height="35dp" android:id="@+id/textView9"
+                    android:layout_width="228dp"
+                    android:layout_height="36dp" android:id="@+id/textView9"
                     android:textStyle="bold" android:gravity="center_vertical" android:textSize="24sp"
-                    android:layout_marginTop="14dp" app:layout_constraintTop_toBottomOf="@+id/textView8"
-                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"
-                    android:layout_marginEnd="212dp" app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="36dp"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintTop_toBottomOf="@+id/textView10"
+                    android:layout_marginEnd="147dp" app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                    android:text="@string/hello_user_prompt"
+                    android:layout_width="94dp"
+                    android:layout_height="37dp" android:id="@+id/textView10"
+                    android:layout_marginEnd="281dp"
+                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="32dp" app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="47dp" android:gravity="center_vertical" android:textSize="22dp"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
