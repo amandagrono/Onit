@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_prompt">ABOUT</string>
+    <string name="alarm_prompt">ALARMS</string>
+    <string name="geo_prompt">GEO REMINDERS</string>
+    <string name="proximity_prompt">PROXIMITY REMINDERS</string>
+    <string name="dash_total">TOTAL</string>
+    <string name="dash_count">0</string>
+    <string name="blank"></string>
+    <string name="nearest_reminder">NEAREST REMINDER</string>
+    <string name="hello_user_prompt">HELLO</string>
+    <string name="dashboard_text">DASHBOARD</string>
+</resources>

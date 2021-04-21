@@ -1,16 +1,13 @@
-package com.temple.onit;
+package com.temple.onit.dashboard;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,19 +18,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.temple.onit.Alarms.SmartAlarmActivity;
 import com.temple.onit.Alarms.list.AlarmListActivity;
+import com.temple.onit.Constants;
 import com.temple.onit.GeofencedReminder.GeofenceReminderManager;
 import com.temple.onit.GeofencedReminder.GeofencedReminder;
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
-import com.temple.onit.Alarms.SmartAlarm;
+import com.temple.onit.OnitApplication;
+import com.temple.onit.R;
 import com.temple.onit.account.AccountManager;
 import com.temple.onit.services.LocationService;
 import com.temple.onit.userreminder.ProximityReminderActivity;
@@ -44,7 +38,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface {
+public class DashboardActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface {
 
     private Button newAlarmButton;
     private Button newProximityReminderButton;
@@ -58,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_dashboard);
 
         OnitApplication.instance.accountManager = new AccountManager(getApplicationContext(), this);
 
@@ -83,15 +77,15 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         loginButton = findViewById(R.id.loginButton);
 
         newAlarmButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AlarmListActivity.class);
+            Intent intent = new Intent(DashboardActivity.this, AlarmListActivity.class);
             launchSmartAlarm(intent);
         });
         newProximityReminderButton.setOnClickListener(v->{
-            Intent intent = new Intent(MainActivity.this, ProximityReminderActivity.class);
+            Intent intent = new Intent(DashboardActivity.this, ProximityReminderActivity.class);
             launchProximityReminder(intent);
         });
         newGeofencedReminderButton.setOnClickListener(v->{
-            Intent intent = new Intent(MainActivity.this, GeofencedReminderActivity.class);
+            Intent intent = new Intent(DashboardActivity.this, GeofencedReminderActivity.class);
             launchGeofencedReminder(intent);
         });
 
