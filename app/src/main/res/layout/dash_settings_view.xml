@@ -14,11 +14,11 @@
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
             app:cardBackgroundColor="#E2E2E2"
-            app:cardCornerRadius="10dp" app:cardElevation="5dp"
+            app:cardCornerRadius="10dp" app:cardElevation="9dp"
             app:cardUseCompatPadding="true" android:padding="10dp">
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="270dp">
+                android:layout_height="270dp" android:background="@color/lightOff">
 
             <TextView
                     android:text="@string/about_prompt"
@@ -31,27 +31,27 @@
                     android:layout_marginTop="40dp" app:layout_constraintTop_toBottomOf="@+id/imageView2"/>
             <com.google.android.material.switchmaterial.SwitchMaterial android:layout_width="56dp"
                                                                        android:layout_height="18dp"
-                                                                       android:id="@+id/switchMaterial"
+                                                                       android:id="@+id/_locationSwtich"
                                                                        android:layout_marginEnd="4dp"
                                                                        app:layout_constraintEnd_toEndOf="parent"
                                                                        android:layout_marginTop="16dp"
                                                                        app:layout_constraintTop_toBottomOf="@+id/textView"/>
             <com.google.android.material.switchmaterial.SwitchMaterial android:layout_width="56dp"
                                                                        android:layout_height="18dp"
-                                                                       android:id="@+id/switchMaterial2"
+                                                                       android:id="@+id/_backgroundSwitch"
                                                                        app:layout_constraintBottom_toBottomOf="parent"
                                                                        android:layout_marginBottom="28dp"
                                                                        android:layout_marginEnd="4dp"
                                                                        app:layout_constraintEnd_toEndOf="parent"
                                                                        android:layout_marginTop="23dp"
-                                                                       app:layout_constraintTop_toBottomOf="@+id/switchMaterial"
+                                                                       app:layout_constraintTop_toBottomOf="@+id/_locationSwtich"
                                                                        app:layout_constraintVertical_bias="0.277"/>
             <TextView
                     android:text="@string/prompt_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:id="@+id/textView8"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="16dp" app:layout_constraintEnd_toStartOf="@+id/switchMaterial"
+                    android:layout_marginStart="16dp" app:layout_constraintEnd_toStartOf="@+id/_locationSwtich"
                     android:layout_marginEnd="39dp"
                     app:layout_constraintHorizontal_bias="0.0" android:layout_marginTop="23dp"
                     app:layout_constraintTop_toBottomOf="@+id/textView"/>
@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content" android:id="@+id/textView11"
                     android:textSize="10sp" android:layout_marginTop="28dp"
                     app:layout_constraintTop_toBottomOf="@+id/textView8" app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="16dp" app:layout_constraintEnd_toStartOf="@+id/switchMaterial2"
+                    android:layout_marginStart="16dp" app:layout_constraintEnd_toStartOf="@+id/_backgroundSwitch"
                     app:layout_constraintHorizontal_bias="0.0"
                     android:layout_marginBottom="21dp" app:layout_constraintBottom_toTopOf="@+id/_logoutTextView"/>
             <ImageView
@@ -77,7 +77,7 @@
                     android:layout_height="16dp" android:id="@+id/_logoutTextView"
                     android:textSize="10sp"
                     android:gravity="center" android:textColor="#03A9F4" android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/switchMaterial2" android:layout_marginEnd="56dp"
+                    app:layout_constraintTop_toBottomOf="@+id/_backgroundSwitch" android:layout_marginEnd="56dp"
                     app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="56dp" app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginBottom="17dp" android:onClick="onClick"/>

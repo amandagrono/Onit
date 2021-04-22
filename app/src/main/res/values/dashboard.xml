@@ -16,6 +16,12 @@
     <string name="logout_alert">Are you sure you want to logout? doing so will remove all of your alarms</string>
     <string name="logout_confirm">Confirm</string>
     <string name="logout_cancel">Cancel</string>
-    <string name="alarm_label">Your Next Alarm:</string>
+    <string name="alarm_label">Alarm Preview:</string>
     <string name="no_alarms">No Alarms Currently Set</string>
+    
+    <!-- COLORS -->
+    <color name="background">#756B6B</color>
+    <color name="lightOff">#E4DBDB</color>
+    <color name="darkOff">#F37F7F</color>
+    <color name="medOff">#F4AEAE</color>
 </resources>

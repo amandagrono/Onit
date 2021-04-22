@@ -1,7 +1,9 @@
 package com.temple.onit.dashboard;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,6 +26,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.temple.onit.Alarms.SmartAlarm;
@@ -52,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class DashboardActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface, View.OnClickListener{
+public class DashboardActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface, View.OnClickListener, CompoundButton.OnCheckedChangeListener{
 
     private Button newAlarmButton;
     private Button newProximityReminderButton;
@@ -63,6 +66,7 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     private static final String PASSWORD = "password";
     private androidx.appcompat.widget.Toolbar toolbar;
     ActivityDashboardBinding activityDashboardBinding;
+    DashboardViewModel dashboardViewModel;
 
 
     @SuppressLint("SetTextI18n")
@@ -73,6 +77,8 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         View view = activityDashboardBinding.getRoot();
         setContentView(view);
 
+        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+
         account = FirebaseAuth.getInstance().getCurrentUser();
 
         activityDashboardBinding.buttonAbout.findViewById(R.id._settingsConstraintLayout).setOnClickListener(this);
@@ -81,7 +87,17 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         activityDashboardBinding.buttonAlarm.setOnClickListener(this);
         activityDashboardBinding.buttonGeofencedReminder.setOnClickListener(this);
         activityDashboardBinding.buttonProximityReminder.setOnClickListener(this);
-        ((TextView) activityDashboardBinding.HelloTextView).setText(getString(R.string.hello_user_prompt) + ", " + account.getDisplayName());
+        SwitchMaterial locationSwitch = ((SwitchMaterial) activityDashboardBinding.buttonAbout.findViewById(R.id._locationSwtich));
+        locationSwitch.setOnCheckedChangeListener(this);
+        locationSwitch.setChecked(hasGPSPermission());
+        SwitchMaterial backgroundSwitch = ((SwitchMaterial) activityDashboardBinding.buttonAbout.findViewById(R.id._backgroundSwitch));
+        backgroundSwitch.setOnCheckedChangeListener(this);
+        backgroundSwitch.setChecked(hasBackgroundPermission());
+        String name = account.getDisplayName();
+        if (name == null || name.length() == 0){
+            name = account.getEmail().substring(0, getATIndex(account.getEmail()));
+        }
+        ((TextView) activityDashboardBinding.HelloTextView).setText(getString(R.string.hello_user_prompt) + ", " + name);
         activityDashboardBinding.buttonProximityReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,7 +121,7 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
             }
         }
 
-        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+
         dashboardViewModel.setRepositoryContext(getApplication());
         dashboardViewModel.getAlarmCountLiveData().observe(this, s -> {
             if (s.size() > 0) {
@@ -123,71 +139,49 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
             }
         });
 
-        dashboardViewModel.getGeoCountLiveData().observe(this, s-> {
-            if (s.size() > 0){
-                GeofencedReminder upcomingGeoReminder = s.get(0);
-                View root = activityDashboardBinding.buttonGeofencedReminder.getRootView();
-
-                TextView countTextView = findViewById(R.id._geoCountTextView);
-                TextView addressTextView = findViewById(R.id._geoAddressTextView);
-                countTextView.setText(String.valueOf(s.size()));
-
-                LatLng latLng = upcomingGeoReminder.getLocation();
-                Location location = new Location("location");
-                location.setLatitude(latLng.latitude);
-                location.setLongitude(latLng.longitude);
-
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                String address = "";
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    address = addresses.get(0).getAddressLine(0);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                addressTextView.setText(address);
-
-
-            }
-        });
-
-
-
-        /*newAlarmButton = findViewById(R.id.button_alarm);
-        newProximityReminderButton = findViewById(R.id.button_proximity_reminder);
-        newGeofencedReminderButton = findViewById(R.id.button_geofenced_reminder);
-        loginButton = findViewById(R.id.loginButton);
-
-        newAlarmButton.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardActivity.this, AlarmListActivity.class);
-            launchSmartAlarm(intent);
-        });
-        newProximityReminderButton.setOnClickListener(v->{
-            Intent intent = new Intent(DashboardActivity.this, ProximityReminderActivity.class);
-            launchProximityReminder(intent);
-        });
-        newGeofencedReminderButton.setOnClickListener(v->{
-            Intent intent = new Intent(DashboardActivity.this, GeofencedReminderActivity.class);
-            launchGeofencedReminder(intent);
-        });*/
-
-       /* if(OnitApplication.instance.getAccountManager().loggedIn){
-            changeToLogOut();
-        }
-        else{
-            changeToLogIn();
-        }*/
-
-
         Intent serviceIntent = new Intent(this, LocationService.class);
         startForegroundService(serviceIntent);
 
     }
 
+    public int getATIndex(String email){
+        return email.lastIndexOf('@');
+    }
+
     @Override
     protected void onResume() {
-
         super.onResume();
+        ArrayList<GeofencedReminder> geofencedReminderArrayList = (ArrayList<GeofencedReminder>) dashboardViewModel.getGeoCountLiveData().getValue();
+        assert geofencedReminderArrayList != null;
+        if (geofencedReminderArrayList.size() > 0) {
+            GeofencedReminder upcomingGeoReminder = geofencedReminderArrayList.get(0);
+            View root = activityDashboardBinding.buttonGeofencedReminder.getRootView();
+
+            TextView countTextView = findViewById(R.id._geoCountTextView);
+            TextView addressTextView = findViewById(R.id._geoAddressTextView);
+            countTextView.setText(String.valueOf(geofencedReminderArrayList.size()));
+
+            LatLng latLng = upcomingGeoReminder.getLocation();
+            Location location = new Location("location");
+            location.setLatitude(latLng.latitude);
+            location.setLongitude(latLng.longitude);
+
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            String address = "";
+            try {
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                address = addresses.get(0).getAddressLine(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            addressTextView.setText(address);
+        }
+
+        int proximityReminderCount = dashboardViewModel.getProximityCount();
+        View root = activityDashboardBinding.buttonProximityReminder.getRootView();
+        TextView proximityCountTextView = root.findViewById(R.id._proximityCountTextView);
+        proximityCountTextView.setText(String.valueOf(proximityReminderCount));
+
     }
 
     private void changeToLogIn(){
@@ -369,11 +363,15 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
                 Log.i("clicked", "onClick: alarm");
                 break;
             case R.id._geoConstraintLayout:
-                launchGeofencedReminder(new Intent(this, GeofencedReminderActivity.class));
-                Log.i("clicked", "onClick: alarm");
+                if (!hasGPSPermission()){
+                    Toast.makeText(this, "ENABLE LOCATION SERVICES IN SETTINGS", Toast.LENGTH_SHORT).show();
+                }else {
+                    launchGeofencedReminder(new Intent(this, GeofencedReminderActivity.class));
+                    Log.i("clicked", "onClick: alarm");
+                }
                 break;
             case R.id._proximityConstraintLayout:
-                launchProximityReminder(new Intent(this, ProximityReminder.class));
+                launchProximityReminder(new Intent(this, ProximityReminderActivity.class));
                 Log.i("clicked", "onClick: alarm");
                 break;
             case R.id._logoutTextView:
@@ -431,5 +429,68 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         alertDialog.show();
     }
 
+    public void EnableLocationDialog(){
+        if (!hasGPSPermission()){
+            requestGPSPermission();
+        }
+    }
 
+    public void EnableBackgroundDialog(){
+        if (!hasBackgroundPermission()){
+            requestBackgroundPermission();
+        }
+    }
+
+    private boolean hasBackgroundPermission(){
+        return checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestBackgroundPermission(){
+        requestPermissions(new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 1111);
+    }
+
+    private boolean hasGPSPermission() {
+
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /**
+     * Request FINE location permission
+     */
+    private void requestGPSPermission() {
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1111);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        int id = compoundButton.getId();
+        SwitchMaterial locationSwitch = findViewById(R.id._locationSwtich);
+        SwitchMaterial backgroundSwitch = findViewById(R.id._backgroundSwitch);
+        Log.i("switch", "onCheckedChanged: " + String.valueOf(b));
+        switch (id) {
+            case R.id._locationSwtich:
+                if (b) {
+                    EnableLocationDialog();
+                    break;
+                }
+
+            case R.id._backgroundSwitch:
+                if (b) {
+                    EnableBackgroundDialog();
+                    break;
+                }
+            default:
+                if (!b) {
+                    Toast.makeText(this, "DISABLE IN SETTINGS", Toast.LENGTH_SHORT).show();
+                }
+
+        }
+        backgroundSwitch.setChecked(hasBackgroundPermission());
+        locationSwitch.setChecked(hasGPSPermission());
+
+    }
+
+    public void promptLocationService(){
+        Toast.makeText(this, "ENABLE LOCATION SERVICES", Toast.LENGTH_SHORT).show();
+    }
 }

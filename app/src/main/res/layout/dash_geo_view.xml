@@ -11,11 +11,11 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" app:cardBackgroundColor="#E2E2E2"
-            app:cardCornerRadius="10dp" app:cardElevation="5dp"
+            app:cardCornerRadius="10dp" app:cardElevation="9dp"
             app:cardUseCompatPadding="true" android:padding="10dp">
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
-                android:layout_height="350dp">
+                android:layout_height="350dp" android:background="@color/darkOff">
 
             <TextView
                     android:text="@string/geo_prompt"
@@ -40,7 +40,8 @@
                     android:layout_height="wrap_content" android:id="@+id/textView3"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="70dp" android:layout_marginEnd="69dp"
-                    app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/_geoCountTextView"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/_geoCountTextView"/>
             <TextView
                     android:layout_width="177dp"
                     android:layout_height="8dp" android:id="@+id/textView4"
@@ -49,21 +50,23 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/textView3"/>
             <TextView
-                    android:layout_width="105dp"
-                    android:layout_height="12dp" android:id="@+id/_geoDescTextView"
+                    android:layout_width="164dp"
+                    android:layout_height="wrap_content" android:id="@+id/_geoDescTextView"
                     android:textSize="10sp" android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/textView4"
-                    tools:layout_editor_absoluteX="39dp" android:text="@string/nearest_reminder"
-                    android:gravity="center"/>
+                    android:text="@string/nearest_reminder"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="13dp" app:layout_constraintEnd_toEndOf="parent"/>
             <TextView
                     android:layout_width="144dp"
-                    android:layout_height="37dp" android:id="@+id/_geoAddressTextView"
+                    android:layout_height="wrap_content" android:id="@+id/_geoAddressTextView"
                     android:textSize="18sp"
                     android:gravity="center" android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/_geoDescTextView"
                     android:layout_marginEnd="19dp"
                     app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="19dp"/>
+                    android:layout_marginStart="19dp" android:text="No GeoReminders Currently Set"/>
             <TextView
                     android:layout_width="56dp"
                     android:layout_height="18dp" android:id="@+id/_geoDayTextView"
@@ -72,7 +75,8 @@
                     app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="62dp"
                     app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="12dp"
                     app:layout_constraintHorizontal_bias="0.333" android:layout_marginTop="3dp"
-                    app:layout_constraintTop_toBottomOf="@+id/_geoAddressTextView" app:layout_constraintVertical_bias="0.2"/>
+                    app:layout_constraintTop_toBottomOf="@+id/_geoAddressTextView"
+                    app:layout_constraintVertical_bias="0.2"/>
             <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp" app:srcCompat="@drawable/map_black_24dp"
