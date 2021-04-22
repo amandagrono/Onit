@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -16,6 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
+import com.temple.onit.account.AccountManager;
 import com.temple.onit.dataclasses.ProximityReminder;
 
 import org.json.JSONArray;
@@ -29,6 +31,8 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
     RecyclerView recyclerView;
     FloatingActionButton floatingActionButton;
     ArrayList<ProximityReminder> remindersList;
+    CreateProximityReminderPopup CPRP;
+    EditUserReminderPopup EURP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,13 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
         setContentView(R.layout.activity_proximity_reminder);
 
         recyclerView = findViewById(R.id.reminder_recycler_view);
+
         floatingActionButton = findViewById(R.id.add_reminder_fab);
+
+        floatingActionButton.setOnClickListener( view ->{
+            CPRP = new CreateProximityReminderPopup();
+            CPRP.showUserProximityCreatePopUp(view,this);
+            });
 
         getRemindersFromServer();
 
@@ -47,7 +57,7 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
         remindersList = new ArrayList<>();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = Constants.API_GET_USER_REMINDERS +
-                "?username=" + OnitApplication.instance.getAccountManager().username;
+                "?username=" + OnitApplication.instance.accountManager.username;
         StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
             Log.d("ResponseUserReminder", response);
             convertResponseToList(response);
@@ -112,6 +122,14 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
             Toast.makeText(this, "Failed to accept user reminder", Toast.LENGTH_SHORT).show();
         });
         queue.add(request);
+    }
+
+    @Override
+    public void onEdit(View v, ProximityReminder reminder) {
+        EURP = new EditUserReminderPopup(); // create and show show popup window
+        EURP.showUserReminderEditPopUp(v,reminder.getReminderTitle(),reminder.getReminderContent(),String.valueOf(reminder.getRadius()),reminder.getTarget(),reminder.getIntId(),this);
+        //Log.d("editbutton pressed",reminder.getReminderTitle()+reminder.getTarget()+reminder.getUser()+reminder.getRadius()); // get data associated with each row in recycler
+
     }
 
     public void deleteReminderFromServer(ProximityReminder reminder){

@@ -1,8 +1,8 @@
 package com.temple.onit.userreminder;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -23,8 +23,10 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
     private TextView titleTV;
     private TextView userTV;
     private ImageButton deleteButton;
-    private ImageButton acceptButton;
+    private ImageButton acceptButton, editUserReminderButton;
     ReminderListListener listListener;
+    EditUserReminderPopup EURP;
+
 
     public ProximityReminderViewHolder(@NonNull View itemView, ReminderListListener listener) {
         super(itemView);
@@ -32,6 +34,7 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
         userTV = itemView.findViewById(R.id.other_user_tv);
         deleteButton = itemView.findViewById(R.id.delete_reminder_button);
         acceptButton = itemView.findViewById(R.id.accept_reminder_button);
+        editUserReminderButton = itemView.findViewById(R.id.editProximityReminderButton);
         this.listListener = listener;
     }
     public void bind(ProximityReminder reminder, String email){
@@ -69,11 +72,19 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
                 listListener.onAccept(reminder);
             });
         }
+
+        editUserReminderButton = itemView.findViewById(R.id.editProximityReminderButton);
+        editUserReminderButton.setOnClickListener(v->{
+
+           listListener.onEdit(itemView,reminder);
+        });
+
     }
 
 
     public interface ReminderListListener{
         void onDelete(ProximityReminder reminder);
         void onAccept(ProximityReminder reminder);
+        void onEdit(View v, ProximityReminder reminder);
     }
 }

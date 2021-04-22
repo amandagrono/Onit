@@ -32,6 +32,7 @@ public class OnitApplication extends Application {
         return accountManager;
     }
 
+
     public GeofenceReminderManager getGeofenceReminderManager(){
         return geofenceReminderManager;
     }
