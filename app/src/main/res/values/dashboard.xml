@@ -8,7 +8,7 @@
     <string name="dash_count">0</string>
     <string name="blank"></string>
     <string name="nearest_reminder">NEAREST REMINDER</string>
-    <string name="hello_user_prompt">HELLO</string>
+    <string name="hello_user_prompt">Hello</string>
     <string name="dashboard_text">YOUR DASHBOARD</string>
     <string name="prompt_location">LOCATION</string>
     <string name="prompt_service">BACKGROUND SERVICE</string>
@@ -16,4 +16,6 @@
     <string name="logout_alert">Are you sure you want to logout? doing so will remove all of your alarms</string>
     <string name="logout_confirm">Confirm</string>
     <string name="logout_cancel">Cancel</string>
+    <string name="alarm_label">Your Next Alarm:</string>
+    <string name="no_alarms">No Alarms Currently Set</string>
 </resources>

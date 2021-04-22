@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import com.temple.onit.Alarms.SmartAlarm;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SmartAlarmRepository {
 
@@ -39,6 +40,14 @@ public class SmartAlarmRepository {
         SmartAlarmDatabase.databaseWriteExecutor.execute(() -> {
             alarmDao.deleteAll();
         });
+    }
+
+    public int getSize(){
+        AtomicInteger size = new AtomicInteger();
+        SmartAlarmDatabase.databaseWriteExecutor.execute(()->{
+            size.set(alarmDao.getAlarmSize());
+        });
+        return size.get();
     }
 
     public LiveData<List<SmartAlarm>> getAlarmsLiveData(){
