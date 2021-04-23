@@ -58,8 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:max="4"
-            android:progress="1" />
+            android:max="5"
+            android:progress="100" />
 
         <TextView
             android:id="@+id/radiusDescription"
