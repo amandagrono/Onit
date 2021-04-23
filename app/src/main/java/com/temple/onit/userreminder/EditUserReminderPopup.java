@@ -28,6 +28,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
+import com.temple.onit.dataclasses.ProximityReminder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,10 +45,12 @@ public class EditUserReminderPopup {
     PopupWindow userReminderWindow;
     Context context;
     int maxTriggerDistance = 300, minTriggerDistance = 50; // 300 meter is still going out of your way
+    afterEdit refresh;
 
-    public  void showUserReminderEditPopUp (View v, String title, String body , String distance, String target, int id, Context context){
+    public  void showUserReminderEditPopUp (View v, String title, String body , String distance, String target, int id, Context context, afterEdit listener, boolean accepted){
         this.id = id;
         this.context = context;
+        refresh = listener;
 
         v.getContext();
         LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -109,7 +112,7 @@ public class EditUserReminderPopup {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               editUserReminder(editTitle.getText().toString(),editBody.getText().toString(),editDistance.getText().toString(),target);
+               editUserReminder(editTitle.getText().toString(),editBody.getText().toString(),editDistance.getText().toString(),target,accepted);
             }
         });
 
@@ -124,7 +127,7 @@ public class EditUserReminderPopup {
 
     }
 
-    private void editUserReminder( String title, String body , String distance, String target){
+    private void editUserReminder( String title, String body , String distance, String target, boolean accepted){
         final String postTitle= title,
                 postBody= body,
                 postDist = distance,
@@ -144,6 +147,8 @@ public class EditUserReminderPopup {
                     userReminderWindow.dismiss();
                     String toast = "Updated " + postTitle;
                     Toast.makeText(context, toast, Toast.LENGTH_LONG).show();
+                    refresh.editDone();
+
                 }
             }
         }, new Response.ErrorListener() {
@@ -167,6 +172,10 @@ public class EditUserReminderPopup {
         };
         queue.add(makeRequest);
 
+    }
+
+    public interface afterEdit{
+        void editDone();
     }
 
 }

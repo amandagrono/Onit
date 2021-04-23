@@ -75,7 +75,6 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
 
         editUserReminderButton = itemView.findViewById(R.id.editProximityReminderButton);
         editUserReminderButton.setOnClickListener(v->{
-
            listListener.onEdit(itemView,reminder);
         });
 

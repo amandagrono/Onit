@@ -67,9 +67,11 @@ public class SmartAlarmViewHolder extends RecyclerView.ViewHolder{
         toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
             listener.onToggle(alarm);
         });
+
         alarmDeleteButton.setOnClickListener(v -> {
             listener.onDelete(alarm);
         });
+
 
     }
     private String getArrivalTimeText(SmartAlarm alarm){

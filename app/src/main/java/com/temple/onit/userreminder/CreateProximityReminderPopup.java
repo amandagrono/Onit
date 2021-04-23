@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +22,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 
-import com.temple.onit.account.AccountManager;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,7 +65,7 @@ public class CreateProximityReminderPopup {
         createBody = createProximityPopup.findViewById(R.id.createBody);
 
         createTarget = createProximityPopup.findViewById(R.id.createTarget);
-        targetCheck = createProximityPopup.findViewById(R.id.targetCheck);
+        targetCheck = createProximityPopup.findViewById(R.id.geoDistanceCheck);
         createTarget.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

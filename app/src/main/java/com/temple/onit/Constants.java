@@ -54,6 +54,7 @@ public class Constants {
     public static final String API_ADD_GEOFENCED_REMINDER = URL+"/geo_reminder";
     public static final String API_GET_GEOFENCED_REMINDERS = URL+"/get_geo_reminder";
     public static final String API_DELETE_GEOFENCED_REMINDER = URL+"/delete_geofence";
+    public static final String API_DISPLAY_GEO_REMINDERS = URL+"/display_geo_reminders";
 
     /* API ENDPOINTS FOR SMART ALARMS */
     public static final String API_ADD_SMART_ALARM = URL+"/alarm";

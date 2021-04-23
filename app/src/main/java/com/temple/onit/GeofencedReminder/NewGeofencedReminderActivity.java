@@ -15,15 +15,24 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class NewGeofencedReminderActivity extends AppCompatActivity implements OnMapReadyCallback, GeofenceReminderManager.GeofenceManagerInterface {
@@ -191,6 +200,7 @@ public class NewGeofencedReminderActivity extends AppCompatActivity implements O
     }
     private void addReminder(GeofencedReminder reminder){
         OnitApplication.instance.getGeofenceReminderManager().add(reminder, this, this);
+        // post lat and long to database
 
     }
 
@@ -210,4 +220,7 @@ public class NewGeofencedReminderActivity extends AppCompatActivity implements O
     public void onFailure(String error) {
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
+
+
+
 }

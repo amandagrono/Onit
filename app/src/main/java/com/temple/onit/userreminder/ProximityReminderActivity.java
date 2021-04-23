@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ProximityReminderActivity extends AppCompatActivity implements ProximityReminderViewHolder.ReminderListListener {
+public class ProximityReminderActivity extends AppCompatActivity implements ProximityReminderViewHolder.ReminderListListener, EditUserReminderPopup.afterEdit {
 
     RecyclerView recyclerView;
     FloatingActionButton floatingActionButton;
@@ -127,9 +127,7 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
     @Override
     public void onEdit(View v, ProximityReminder reminder) {
         EURP = new EditUserReminderPopup(); // create and show show popup window
-        EURP.showUserReminderEditPopUp(v,reminder.getReminderTitle(),reminder.getReminderContent(),String.valueOf(reminder.getRadius()),reminder.getTarget(),reminder.getIntId(),this);
-        //Log.d("editbutton pressed",reminder.getReminderTitle()+reminder.getTarget()+reminder.getUser()+reminder.getRadius()); // get data associated with each row in recycler
-
+        EURP.showUserReminderEditPopUp(v,reminder.getReminderTitle(),reminder.getReminderContent(),String.valueOf(reminder.getRadius()),reminder.getTarget(),reminder.getIntId(),this,this,reminder.isAccepted());
     }
 
     public void deleteReminderFromServer(ProximityReminder reminder){
@@ -142,6 +140,11 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
             Toast.makeText(this, "Failed to Delete User Reminder", Toast.LENGTH_SHORT).show();
         });
         queue.add(request);
+    }
+//  interface from EditUserReminderPopup
+    @Override
+    public void editDone() {
+        getRemindersFromServer();
     }
 
 }
