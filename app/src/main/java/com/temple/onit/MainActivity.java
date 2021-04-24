@@ -2,10 +2,14 @@ package com.temple.onit;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
@@ -35,6 +39,7 @@ import com.temple.onit.GeofencedReminder.GeofencedReminder;
 import com.temple.onit.GeofencedReminder.GeofencedReminderActivity;
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.account.AccountManager;
+import com.temple.onit.authentication.AuthenticationActivity;
 import com.temple.onit.services.LocationService;
 import com.temple.onit.userreminder.ProximityReminderActivity;
 
@@ -66,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
         account = FirebaseAuth.getInstance().getCurrentUser();
         OnitApplication.instance.getAccountManager().addUser(this, account.getUid(), PASSWORD , PASSWORD, getApplicationContext(), account.getEmail());
         Log.i("loginAccountManager", "account " + account.getUid() + " pass: " + PASSWORD);
+
+
 
         if(getIntent().getExtras() != null){
             String status = getIntent().getStringExtra("status");
@@ -103,9 +110,20 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             changeToLogIn();
         }
 
+        if(!OnitApplication.instance.getAccountManager().loggedIn){
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
+            startActivity(intent);
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Intent serviceIntent = new Intent(this, LocationService.class);
+            startForegroundService(serviceIntent);
+        }
 
-        Intent serviceIntent = new Intent(this, LocationService.class);
-        startForegroundService(serviceIntent);
+
 
     }
 
@@ -117,52 +135,22 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
 
     private void changeToLogIn(){
         loginButton.setText("Login");
-        loginButton.setOnClickListener(v->{
-            if(OnitApplication.instance.getAccountManager().loggedIn){
-                Toast.makeText(this, "Already Logged In!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Context context = this;
-            LinearLayout layout = new LinearLayout(context);
-            layout.setOrientation(LinearLayout.VERTICAL);
+        loginButton.setOnClickListener(v -> {
 
-            final EditText username = new EditText(context);
-            username.setHint("Username");
-            layout.addView(username);
-
-            final EditText password = new EditText(context);
-            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            password.setHint("Password");
-            layout.addView(password);
-
-            AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle("Login")
-                    .setView(layout)
-                    .setPositiveButton("Enter", (dialog1, which) -> {
-                        if(username.getText().toString().equals("") || password.getText().toString().equals("")){
-                            Toast.makeText(context, "Please Enter A Username", Toast.LENGTH_SHORT).show();
-
-                        }
-                        else{
-                            OnitApplication.instance.getAccountManager().regularLogin(username.getText().toString(), password.getText().toString(), context);
-                        }
-
-                    })
-                    .setNegativeButton("Cancel", ((dialog1, which) ->{
-                        dialog1.cancel();
-                    }))
-                    .show();
         });
+
     }
 
+    @Override
+    public void onLoginFailed(boolean loggedIn) {
 
+    }
 
     private void changeToLogOut(){
         loginButton.setText("Logout");
         loginButton.setOnClickListener(v -> {
             OnitApplication.instance.getAccountManager().logout(this);
             changeToLogIn();
-
         });
     }
 
