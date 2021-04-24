@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 
+import java.util.Arrays;
 import java.util.List;
 
 import kotlin.collections.CollectionsKt;
@@ -138,6 +139,7 @@ public class GeofenceReminderManager {
 
     public List<GeofencedReminder> getAll(){
         if(sharedPreferences.contains("REMINDERS")){
+
             String gsonString = sharedPreferences.getString("REMINDERS", null);
             GeofencedReminder[] arrayOfReminders = gson.fromJson(gsonString, GeofencedReminder[].class);
             if(arrayOfReminders != null){

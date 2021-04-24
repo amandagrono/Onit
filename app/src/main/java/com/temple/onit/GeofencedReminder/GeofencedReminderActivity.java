@@ -68,9 +68,7 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
             startActivityForResult(intent, 329);
         });
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
-        }
+
     }
 
     @Override

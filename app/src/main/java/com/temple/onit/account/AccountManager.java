@@ -72,6 +72,7 @@ public class AccountManager {
             }
         }, error -> {
             Log.d("Error: ", error.toString());
+            listener.onLoginFailed(false);
             error.printStackTrace();
             Toast.makeText(context, "Failed to log in", Toast.LENGTH_SHORT).show();
         });
@@ -134,6 +135,7 @@ public class AccountManager {
 
     public interface AccountListener{
         public void onLoginResponse(boolean loggedIn);
+        public void onLoginFailed(boolean loggedIn);
     }
 
 }
