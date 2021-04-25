@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
@@ -34,14 +35,17 @@ import com.temple.onit.R;
 import com.temple.onit.Utils;
 import com.temple.onit.dashboard.DashboardActivity;
 
-public class GeofencedReminderActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GeofenceReminderManager.RemoveReminderInterface {
+public class GeofencedReminderActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GeofenceReminderManager.RemoveReminderInterface , GeofenceReminderManager.GeofenceManagerInterface, EditGeofencedPopup.onSubmitEditGeoReminder{
 
     private GeofencingClient geofencingClient;
     private GoogleMap googleMap;
     private LocationManager locationManager;
 
     private FloatingActionButton newReminderFAB;
-    private FloatingActionButton currentLocationFAB;
+    private FloatingActionButton currentLocationFAB, resetButton;
+
+   EditGeofencedPopup EGP;
+   View v;
 
 
     @Override
@@ -56,10 +60,12 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
         else{
             finish();
         }
+        v = mapFragment.getView();
         newReminderFAB = findViewById(R.id.newReminder);
         newReminderFAB.setVisibility(View.GONE);
         currentLocationFAB = findViewById(R.id.currentLocation);
         currentLocationFAB.setVisibility(View.GONE);
+        resetButton = findViewById(R.id.zoomOutCamera);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         String bestProvider = locationManager.getBestProvider(new Criteria(), false);
@@ -70,6 +76,11 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
             Intent intent = NewGeofencedReminderActivity.newIntent(this, googleMap.getCameraPosition().target, googleMap.getCameraPosition().zoom);
             startActivityForResult(intent, 329);
         });
+
+        resetButton.setOnClickListener( view -> { // resets camera to world view
+            googleMap.moveCamera(CameraUpdateFactory.zoomOut());
+        });
+
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
@@ -156,6 +167,7 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
     }
     @Override
     public boolean onMarkerClick(Marker marker) {
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),15));
         GeofencedReminder reminder = OnitApplication.instance.getGeofenceReminderManager().get((String) marker.getTag());
         if(reminder != null){
             showReminderRemoveAlert(reminder);
@@ -165,14 +177,22 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
 
     private void showReminderRemoveAlert(GeofencedReminder reminder){
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setMessage("Remove Reminder?");
+        String message = "Remove "+reminder.getReminderTitle()+"?";
+        alertDialog.setMessage(message);
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", (dialog, which) -> {
            removeReminder(reminder);
            dialog.dismiss();
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", (dialog, which) -> dialog.dismiss());
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,"edit",(dialog,which)->{
+                displayEditPopup(reminder);
+
+        });
+
         alertDialog.show();
     }
+
     private void removeReminder(GeofencedReminder reminder){
         OnitApplication.instance.getGeofenceReminderManager().remove(reminder, this, this);
     }
@@ -188,11 +208,28 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
     @Override
     public void onSuccess() {
         showReminders();
-        Toast.makeText(this, "Reminder Removed!", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Reminder Removed!", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onFailure(String error) {
         Toast.makeText(this, "Failed to remove reminder", Toast.LENGTH_LONG).show();
+    }
+
+    private void displayEditPopup(GeofencedReminder reminder){
+        EGP = new EditGeofencedPopup(); // create popup and pass it the reminder to edit
+        EGP.showGeoEditPopUp(v,reminder,this,this);
+    }
+
+    // when user presses submit on EditGeofencedPopup
+    @Override
+    public void createProximityReminder(GeofencedReminder newOne, GeofencedReminder oldOne) {
+        // delete old intent
+        OnitApplication.instance.getGeofenceReminderManager().remove(oldOne, this, this);
+        // create new intent
+        OnitApplication.instance.getGeofenceReminderManager().add(newOne,this,this);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(newOne.getLatLng()));
+        String toast = "Updated " + newOne.getReminderTitle();
+        Toast.makeText(this,toast,Toast.LENGTH_LONG).show();
     }
 }

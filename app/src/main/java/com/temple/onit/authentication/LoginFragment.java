@@ -148,6 +148,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
         FirebaseApp.initializeApp(getActivity());
         mAuth = FirebaseAuth.getInstance();
         googleSignInClient();
+
     }
 
     @Override
@@ -164,6 +165,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
     @Override
     public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
         controller = Navigation.findNavController(view);
         account = GoogleSignIn.getLastSignedInAccount(requireActivity());
         user = FirebaseAuth.getInstance().getCurrentUser();

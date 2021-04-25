@@ -51,4 +51,5 @@ public class SmartAlarmRecyclerView extends RecyclerView.Adapter<SmartAlarmViewH
         super.onViewRecycled(holder);
         holder.toggle.setOnCheckedChangeListener(null);
     }
+
 }

@@ -177,8 +177,6 @@ public class SmartAlarmActivity extends AppCompatActivity implements MapFragment
 
     private void saveAlarm(){
         int id = new Random().nextInt(Integer.MAX_VALUE);
-
-
         SmartAlarm smartAlarm = new SmartAlarm(id, timePicker.getHour(), timePicker.getMinute(), calculateGetReadyTime(), transitTime, alarmTitleEditText.getText().toString(), getDaysEnabled(), true, recurringCheckBox.isChecked(), startingLocation.latitude, startingLocation.longitude, destinationLocation.latitude, destinationLocation.longitude, System.currentTimeMillis());
         Log.d("Save Alarm", smartAlarm.toString());
         createAlarmViewModel.insert(smartAlarm);

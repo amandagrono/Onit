@@ -79,7 +79,11 @@
         <activity android:name=".GeofencedReminder.GeofencedReminderActivity"/>
         <activity android:name=".userreminder.ProximityReminderActivity"/>
         <activity android:name=".Alarms.SmartAlarmActivity"/>
+
+        <activity android:name=".Alarms.EditSmartAlarmActivity"/>
+
         <activity android:name=".dashboard.DashboardActivity">
+
            <!-- <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
