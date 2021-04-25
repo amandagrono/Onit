@@ -7,8 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AlertDialog;
@@ -32,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.Alarms.database.SmartAlarmRepository;
 import com.temple.onit.Alarms.list.AlarmListActivity;
+import com.temple.onit.Alarms.list.SmartAlarmViewHolder;
 import com.temple.onit.Constants;
 import com.temple.onit.GeofencedReminder.GeofenceReminderManager;
 import com.temple.onit.GeofencedReminder.GeofencedReminder;
@@ -41,8 +41,6 @@ import com.temple.onit.R;
 import com.temple.onit.account.AccountManager;
 import com.temple.onit.authentication.AuthenticationActivity;
 import com.temple.onit.databinding.ActivityDashboardBinding;
-import com.temple.onit.databinding.DashAlarmViewBinding;
-import com.temple.onit.dataclasses.ProximityReminder;
 import com.temple.onit.services.LocationService;
 import com.temple.onit.userreminder.ProximityReminderActivity;
 
@@ -87,12 +85,15 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         activityDashboardBinding.buttonAlarm.setOnClickListener(this);
         activityDashboardBinding.buttonGeofencedReminder.setOnClickListener(this);
         activityDashboardBinding.buttonProximityReminder.setOnClickListener(this);
+
         SwitchMaterial locationSwitch = ((SwitchMaterial) activityDashboardBinding.buttonAbout.findViewById(R.id._locationSwtich));
         locationSwitch.setOnCheckedChangeListener(this);
         locationSwitch.setChecked(hasGPSPermission());
+
         SwitchMaterial backgroundSwitch = ((SwitchMaterial) activityDashboardBinding.buttonAbout.findViewById(R.id._backgroundSwitch));
         backgroundSwitch.setOnCheckedChangeListener(this);
         backgroundSwitch.setChecked(hasBackgroundPermission());
+
         String name = account.getDisplayName();
         if (name == null || name.length() == 0){
             name = account.getEmail().substring(0, getATIndex(account.getEmail()));
@@ -106,9 +107,6 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         });
 
         OnitApplication.instance.accountManager = new AccountManager(getApplicationContext(), this);
-
-
-
         OnitApplication.instance.getAccountManager().addUser(this, account.getUid(), PASSWORD , PASSWORD, getApplicationContext(), account.getEmail());
         Log.i("loginAccountManager", "account " + account.getUid() + " pass: " + PASSWORD);
 
@@ -124,18 +122,26 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
 
         dashboardViewModel.setRepositoryContext(getApplication());
         dashboardViewModel.getAlarmCountLiveData().observe(this, s -> {
+            TextView countTextView = (TextView)findViewById(R.id._alarmCountTextView);
+            TextView descTextView = ((TextView) findViewById(R.id._alarmDescTextView));
+            TextView labelTextView = ((TextView) findViewById(R.id._alarmLabelTextView));
+            TextView dayTextView = ((TextView) findViewById(R.id._alarmDayTextView));
             if (s.size() > 0) {
+                Log.i("alarm update", "alarm update");
                 SmartAlarm upcomingAlarm = s.get(0);
-                TextView countTextView = (TextView)findViewById(R.id._alarmCountTextView);
-                TextView descTextView = ((TextView) findViewById(R.id._alarmDescTextView));
-                TextView dateTextView = ((TextView) findViewById(R.id._alarmDateTextView));
-                TextView dayTextView = ((TextView) findViewById(R.id._alarmDayTextView));
 
-
+                String time = SmartAlarmViewHolder.getArrivalTimeText(upcomingAlarm);
                 countTextView.setText(s.size() + "");
-                descTextView.setText(upcomingAlarm.getAlarmTitle());
-                dateTextView.setText(upcomingAlarm.getArrivalHour() + ":" + upcomingAlarm.getArrivalMinute());
-                dayTextView.setText(upcomingAlarm.getDays());
+                labelTextView.setText(SmartAlarmViewHolder.getArrivalTimeText(upcomingAlarm));
+                Log.i("days", "getDaysPreview: " + upcomingAlarm.getDays());
+                dayTextView.setText(upcomingAlarm.getDaysPreview() + "\n\n" + upcomingAlarm.getAlarmTitle());
+
+            }else{
+                countTextView.setText(String.valueOf(s.size()));
+                labelTextView.setText(getString(R.string.no_alarms));
+                descTextView.setText(getString(R.string.alarm_label));
+                dayTextView.setText("");
+
             }
         });
 
@@ -152,13 +158,14 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     protected void onResume() {
         super.onResume();
         ArrayList<GeofencedReminder> geofencedReminderArrayList = (ArrayList<GeofencedReminder>) dashboardViewModel.getGeoCountLiveData().getValue();
+        TextView countTextView = findViewById(R.id._geoCountTextView);
+        TextView addressTextView = findViewById(R.id._geoAddressTextView);
         assert geofencedReminderArrayList != null;
         if (geofencedReminderArrayList.size() > 0) {
             GeofencedReminder upcomingGeoReminder = geofencedReminderArrayList.get(0);
             View root = activityDashboardBinding.buttonGeofencedReminder.getRootView();
 
-            TextView countTextView = findViewById(R.id._geoCountTextView);
-            TextView addressTextView = findViewById(R.id._geoAddressTextView);
+
             countTextView.setText(String.valueOf(geofencedReminderArrayList.size()));
 
             LatLng latLng = upcomingGeoReminder.getLocation();
@@ -175,6 +182,9 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
                 e.printStackTrace();
             }
             addressTextView.setText(address);
+        }else{
+            addressTextView.setText(getString(R.string.no_geo));
+            countTextView.setText(String.valueOf(geofencedReminderArrayList.size()));
         }
 
         int proximityReminderCount = dashboardViewModel.getProximityCount();
@@ -182,6 +192,34 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         TextView proximityCountTextView = root.findViewById(R.id._proximityCountTextView);
         proximityCountTextView.setText(String.valueOf(proximityReminderCount));
 
+    }
+
+    private String getDayOfWeek(int value) {
+        String day = "";
+        switch (value) {
+            case 1:
+                day = "Sunday";
+                break;
+            case 2:
+                day = "Monday";
+                break;
+            case 3:
+                day = "Tuesday";
+                break;
+            case 4:
+                day = "Wednesday";
+                break;
+            case 5:
+                day = "Thursday";
+                break;
+            case 6:
+                day = "Friday";
+                break;
+            case 7:
+                day = "Saturday";
+                break;
+        }
+        return day;
     }
 
     private void changeToLogIn(){
@@ -349,12 +387,6 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.dash_menu, menu);
-        return true;
-    }
-
-    @Override
     public void onClick(View view) {
         int id = view.getId();
         switch (id){
@@ -492,5 +524,11 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
 
     public void promptLocationService(){
         Toast.makeText(this, "ENABLE LOCATION SERVICES", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void finishActivity(MenuItem item, AppCompatActivity activity){
+        if (item.getItemId() == android.R.id.home) {
+            activity.finish();
+        }
     }
 }

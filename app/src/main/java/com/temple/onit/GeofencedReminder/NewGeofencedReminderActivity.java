@@ -1,5 +1,8 @@
 package com.temple.onit.GeofencedReminder;
 
+import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -23,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.Utils;
+import com.temple.onit.dashboard.DashboardActivity;
 
 import java.util.Objects;
 
@@ -102,6 +106,17 @@ public class NewGeofencedReminderActivity extends AppCompatActivity implements O
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        DashboardActivity.finishActivity(item, this);
+        return true;
 
     }
 

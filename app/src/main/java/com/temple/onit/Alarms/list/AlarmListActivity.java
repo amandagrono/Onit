@@ -1,7 +1,9 @@
 package com.temple.onit.Alarms.list;
 
+import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -18,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.Alarms.SmartAlarmActivity;
 import com.temple.onit.R;
+import com.temple.onit.dashboard.DashboardActivity;
 
 import java.util.List;
 
@@ -51,8 +54,18 @@ public class AlarmListActivity extends AppCompatActivity implements OnToggleAlar
             startActivity(intent);
         });
 
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        DashboardActivity.finishActivity(item, this);
+        return true;
+
+    }
 
     @Override
     public View onCreateView(@Nullable @org.jetbrains.annotations.Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {

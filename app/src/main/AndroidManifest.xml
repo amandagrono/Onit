@@ -27,7 +27,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Alarms.list.AlarmListActivity"/>
+        <activity android:name=".Alarms.list.AlarmListActivity"
+                  android:parentActivityName=".dashboard.DashboardActivity"
+        />
         <activity
                 android:name=".Alarms.AlarmViewActivity"
                 android:launchMode="singleTask"/>

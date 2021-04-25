@@ -1,5 +1,8 @@
 package com.temple.onit.Alarms;
 
+import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -19,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.temple.onit.Alarms.services.SmartAlarmService;
 import com.temple.onit.Constants;
 import com.temple.onit.R;
+import com.temple.onit.dashboard.DashboardActivity;
 
 public class AlarmViewActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -68,6 +72,17 @@ public class AlarmViewActivity extends AppCompatActivity implements OnMapReadyCa
         if(mapFragment != null){
             mapFragment.getMapAsync(this);
         }
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        DashboardActivity.finishActivity(item, this);
+        return true;
+
     }
 
     private String setTimeText(int hour, int minute){

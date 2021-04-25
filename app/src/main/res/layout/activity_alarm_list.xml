@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Alarms.list.AlarmListActivity"
-    android:orientation="vertical">
+    android:orientation="vertical" android:background="@color/lightOff">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/alarm_list_recycler_view"
