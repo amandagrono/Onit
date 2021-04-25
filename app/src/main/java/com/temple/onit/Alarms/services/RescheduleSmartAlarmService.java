@@ -12,6 +12,7 @@ import com.temple.onit.Alarms.database.SmartAlarmRepository;
 
 import java.util.List;
 
+// Service to rescedule alarms when the device boot broadcast is sent
 public class RescheduleSmartAlarmService extends LifecycleService {
     public RescheduleSmartAlarmService() {
     }

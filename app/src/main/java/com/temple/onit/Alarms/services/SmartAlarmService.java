@@ -19,6 +19,7 @@ import com.temple.onit.R;
 
 import java.util.Objects;
 
+// Service that is started when alarm broadcast is received
 public class SmartAlarmService extends Service {
 
     private MediaPlayer mediaPlayer;
@@ -52,6 +53,7 @@ public class SmartAlarmService extends Service {
        + "arrival hour: " + arrivalHour  + " arrival minute: " + arrivalMinute +
                " destination longitude: " + destinationLongitude + " destination latitude: " + destinationLatitude);
 
+       // putting extras for the notification intents
        notificationIntent.putExtra(Constants.ALARM_TITLE, alarmTitle);
        notificationIntent.putExtra(Constants.LEAVE_HOUR, leaveHour);
        notificationIntent.putExtra(Constants.LEAVE_MINUTE, leaveMinute);
@@ -70,6 +72,7 @@ public class SmartAlarmService extends Service {
        long[] pattern = {10, 100, 1000};
        int[] amplitudes = {100, 200, 250};
        vibrator.vibrate(VibrationEffect.createWaveform(pattern, amplitudes, 0));
+
 
        startForeground(1, notification);
 

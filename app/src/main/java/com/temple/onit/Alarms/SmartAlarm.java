@@ -148,50 +148,6 @@ public class SmartAlarm{
         return started;
     }
 
-    private int getLeaveHour(){
-        long arrivalTimeInMillis = (arrivalHour*Constants.HOUR_IN_MILLIS) + (arrivalMinute*Constants.MINUTE_IN_MILLIS);
-        long timeToLeave = arrivalTimeInMillis-transitTime;
-        return (int) (timeToLeave/(Constants.HOUR_IN_MILLIS));
-    }
-    private int getLeaveMinute(){
-        long arrivalTimeInMillis = (arrivalHour*Constants.HOUR_IN_MILLIS) + (arrivalMinute*Constants.MINUTE_IN_MILLIS);
-        long timeToLeave = arrivalTimeInMillis-transitTime;
-        return (int) (timeToLeave%(Constants.HOUR_IN_MILLIS))/Constants.MINUTE_IN_MILLIS;
-    }
-
-    private Calendar setWakeupTime(){
-        long arrivalTimeInMillis = (arrivalHour*Constants.HOUR_IN_MILLIS) + (arrivalMinute*Constants.MINUTE_IN_MILLIS);
-        long timeToLeave = arrivalTimeInMillis-transitTime;
-        long timeToWakeUp = timeToLeave - getReadyTime;
-
-        int wakeupHour = (int) (timeToWakeUp/(Constants.HOUR_IN_MILLIS));
-        int wakeupMinute = (int) (timeToWakeUp%(Constants.HOUR_IN_MILLIS))/Constants.MINUTE_IN_MILLIS;
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, wakeupHour);
-        calendar.set(Calendar.MINUTE, wakeupMinute);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
-        }
-        return calendar;
-
-    }
-    private String getDaysEnabled(){
-        String returnString = "";
-        if(enabledOnDay(0)) returnString = returnString + "Sunday, ";
-        if(enabledOnDay(1)) returnString = returnString + "Monday, ";
-        if(enabledOnDay(2)) returnString = returnString + "Tuesday, ";
-        if(enabledOnDay(3)) returnString = returnString + "Wednesday, ";
-        if(enabledOnDay(4)) returnString = returnString + "Thursday, ";
-        if(enabledOnDay(5)) returnString = returnString + "Friday, ";
-        if(enabledOnDay(6)) returnString = returnString + "Saturday, ";
-
-        return returnString.substring(0, returnString.length() - 2);
-    }
 
     public boolean enabledOnDay(int day){
         return days.charAt(day) == '1';
@@ -266,10 +222,11 @@ public class SmartAlarm{
 
     }
 
-    private int millisToHours(long millis){
+    //these two methods are public for testing reasons
+    public static int millisToHours(long millis){
         return (int) (millis/Constants.HOUR_IN_MILLIS);
     }
-    private int millisToMinutes(long millis){
+    public static int millisToMinutes(long millis){
         millis = millis%Constants.HOUR_IN_MILLIS;
         return (int) millis/Constants.MINUTE_IN_MILLIS;
     }

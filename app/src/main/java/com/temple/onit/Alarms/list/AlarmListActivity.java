@@ -46,13 +46,14 @@ public class AlarmListActivity extends AppCompatActivity implements OnToggleAlar
         recyclerView.setAdapter(recyclerViewAdapter);
 
         createAlarm = findViewById(R.id.new_alarm_floating_action_button);
+
+        //starts the alarm activity to create a new alarm
         createAlarm.setOnClickListener(v -> {
             Intent intent = new Intent(this, SmartAlarmActivity.class);
             startActivity(intent);
         });
 
     }
-
 
     @Override
     public View onCreateView(@Nullable @org.jetbrains.annotations.Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
@@ -61,6 +62,7 @@ public class AlarmListActivity extends AppCompatActivity implements OnToggleAlar
         return super.onCreateView(parent, name, context, attrs);
     }
 
+    // cancels/schedules alarm based on what the user selects
     @Override
     public void onToggle(SmartAlarm alarm) {
         if(alarm.isStarted()){
@@ -73,6 +75,7 @@ public class AlarmListActivity extends AppCompatActivity implements OnToggleAlar
         }
     }
 
+    // Deleted selected alarm
     @Override
     public void onDelete(SmartAlarm alarm) {
         if(alarm.isStarted()){

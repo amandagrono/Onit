@@ -20,6 +20,7 @@ public class AccountManager {
     public String username = "";
     public AccountListener listener;
 
+    //construcer for the account manager, called in the OnitApplication class to log user in
     public AccountManager(Context context, AccountListener listener){
         this.listener = listener;
         preferences = context.getSharedPreferences("Account", Context.MODE_PRIVATE);
@@ -29,6 +30,7 @@ public class AccountManager {
         }
     }
 
+    //logs in using token stored on the device, and updates firebase token in the server
     public void tokenLogin(Context context, String token){
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = Constants.API_TOKEN_LOGIN + "?token=" + token;
@@ -49,11 +51,13 @@ public class AccountManager {
         queue.add(stringRequest);
     }
 
+    //sets the token for the account to re login later
     public void setToken(String token){
         preferences.edit().putString("Token", token).apply();
         Log.d("TokenPreferences", preferences.getString("Token", "none"));
     }
 
+    //logs in using username and password
     public void regularLogin(String username, String password, Context context){
         RequestQueue queue = Volley.newRequestQueue(context);
         Log.d("Regular Login: ", "Username: " + username+ " Password: " + password);
@@ -79,6 +83,7 @@ public class AccountManager {
         queue.add(stringRequest);
     }
 
+    //adds a user account in the server and database
     public void addUser(AccountListener listener, String username, String password, String confirm, Context context, String email){
         this.listener = listener;
         Log.d("AddUser", "Username: " + username+ " Password: " + password);
@@ -97,10 +102,13 @@ public class AccountManager {
     public void setListener(AccountListener listener){
         this.listener = listener;
     }
+
+    //sets the username that is stored in the manager
     private void setUsername(String username){
         this.username = username;
     }
 
+    //sets the boolean value logged in so the app knows in a user is logged in
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
@@ -112,6 +120,8 @@ public class AccountManager {
 
         return true;
     }
+
+    //logs user out, updates firebase token in server
     public void logout(Context context){
         String temp = this.username;
         this.username = "";
@@ -121,6 +131,7 @@ public class AccountManager {
 
     }
 
+    //updates the firebase token in server for user
     public void updateFBToken(String token, Context context, String user){
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = Constants.API_UPDATE_FIREBASE_TOKEN+"?username="+user+"&firebase_token="+token;
@@ -133,6 +144,7 @@ public class AccountManager {
         queue.add(stringRequest);
     }
 
+    //interface for main activity to use to use callbacks
     public interface AccountListener{
         public void onLoginResponse(boolean loggedIn);
         public void onLoginFailed(boolean loggedIn);

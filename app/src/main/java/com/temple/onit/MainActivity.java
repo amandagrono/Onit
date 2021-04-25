@@ -1,5 +1,6 @@
 package com.temple.onit;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -110,11 +111,12 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
             changeToLogIn();
         }
 
-        if(!OnitApplication.instance.getAccountManager().loggedIn){
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
-            startActivity(intent);
-        }
+        //if(!OnitApplication.instance.getAccountManager().loggedIn){
+            //FirebaseAuth.getInstance().signOut();
+            //Intent intent = new Intent(MainActivity.this, AuthenticationActivity.class);
+            //startActivity(intent);
+        //}
+
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
         }
@@ -125,6 +127,13 @@ public class MainActivity extends AppCompatActivity implements AccountManager.Ac
 
 
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Intent serviceIntent = new Intent(this, LocationService.class);
+        startForegroundService(serviceIntent);
     }
 
     @Override
