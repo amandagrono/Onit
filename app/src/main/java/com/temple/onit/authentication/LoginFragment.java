@@ -207,8 +207,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
     }
 
     public void launchMain(){
+
         Intent intent = new Intent(getContext(), DashboardActivity.class);
+        if(requireActivity().getIntent().getExtras() != null){
+            intent.putExtras(requireActivity().getIntent().getExtras());
+        }
+
         startActivity(intent);
+        requireActivity().finish();
     }
 
     @Override

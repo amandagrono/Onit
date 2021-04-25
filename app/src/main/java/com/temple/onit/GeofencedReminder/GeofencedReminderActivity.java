@@ -70,7 +70,7 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
             Intent intent = NewGeofencedReminderActivity.newIntent(this, googleMap.getCameraPosition().target, googleMap.getCameraPosition().zoom);
             startActivityForResult(intent, 329);
         });
-
+        
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
         }
@@ -84,6 +84,7 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
         super.onOptionsItemSelected(item);
         DashboardActivity.finishActivity(item, this);
         return true;
+
 
     }
 

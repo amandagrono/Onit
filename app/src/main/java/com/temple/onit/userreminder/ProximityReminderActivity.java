@@ -98,7 +98,7 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
     }
     private void populateRecyclerView(){
         recyclerView = findViewById(R.id.reminder_recycler_view);
-        ProximityReminderAdapter adapter = new ProximityReminderAdapter(this, remindersList);
+        ProximityReminderAdapter adapter = new ProximityReminderAdapter(this, remindersList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(adapter);
     }

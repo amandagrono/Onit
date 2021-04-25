@@ -38,6 +38,7 @@ public class Constants {
     public static final String API_LOGIN = URL+"/login";
     public static final String API_TOKEN_LOGIN = URL+"/token_login";
     public static final String API_UPDATE_FIREBASE_TOKEN = URL+"/update_fb_token";
+    public static final String API_GET_EMAIL_FROM_USER = URL+"/email_from_username";
 
     /* API ENDPOINTS FOR USER REMINDERS */
     public static final String API_ADD_USER_REMINDER = URL+"/user_reminder";
