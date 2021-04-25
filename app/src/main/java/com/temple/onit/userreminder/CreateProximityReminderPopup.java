@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
+import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 
@@ -42,10 +43,12 @@ public class CreateProximityReminderPopup {
     TextInputLayout distanceCheck, targetCheck;
     int maxTriggerDistance = 300, minTriggerDistance = 50; // 300 meter is still going out of your way
     boolean targetIssue = false, distanceIssue = false;
+    CreateDone listener;
 
 
-    public  void showUserProximityCreatePopUp(View v, Context con){
+    public  void showUserProximityCreatePopUp(View v, Context con, CreateDone listener){
         context = con;
+        this.listener = listener;
 
         v.getContext();
         LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); // get layout inflater
@@ -138,7 +141,7 @@ public class CreateProximityReminderPopup {
                 issuer = OnitApplication.instance.getAccountManager().username;
 
         RequestQueue queue = Volley.newRequestQueue(context);
-        String server = " http://10.0.2.2:8000/user_reminder";
+        String server = Constants.API_ADD_USER_REMINDER;
 
         StringRequest makeRequest = new StringRequest(Request.Method.POST,server,new Response.Listener<String>(){
             @Override
@@ -149,6 +152,7 @@ public class CreateProximityReminderPopup {
                     createUserProximityWindow.dismiss();
                     String toast = "Added" + postTitle;
                     Toast.makeText(context, toast, Toast.LENGTH_LONG).show();
+                    listener.createDone();
                 }
             }
         }, new Response.ErrorListener() {
@@ -171,5 +175,9 @@ public class CreateProximityReminderPopup {
         };
         queue.add(makeRequest);
 
+    }
+
+    public interface CreateDone{
+        public void createDone();
     }
 }

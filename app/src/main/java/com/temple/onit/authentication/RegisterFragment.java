@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.temple.onit.OnitApplication;
+import com.temple.onit.account.AccountManager;
 import com.temple.onit.dashboard.DashboardActivity;
 import com.temple.onit.R;
 import com.temple.onit.databinding.FragmentRegisterBinding;
@@ -56,6 +59,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
         }
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

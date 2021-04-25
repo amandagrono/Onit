@@ -212,6 +212,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
         Log.i("loginAccountManager", "account " + user.getUid() + " pass: " + PASSWORD);
     }
 
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

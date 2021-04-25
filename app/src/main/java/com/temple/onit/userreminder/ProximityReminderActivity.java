@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class ProximityReminderActivity extends AppCompatActivity implements ProximityReminderViewHolder.ReminderListListener, EditUserReminderPopup.afterEdit {
+public class ProximityReminderActivity extends AppCompatActivity implements ProximityReminderViewHolder.ReminderListListener, EditUserReminderPopup.afterEdit, CreateProximityReminderPopup.CreateDone {
 
     RecyclerView recyclerView;
     FloatingActionButton floatingActionButton;
@@ -52,7 +52,7 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
 
         floatingActionButton.setOnClickListener( view ->{
             CPRP = new CreateProximityReminderPopup();
-            CPRP.showUserProximityCreatePopUp(view,this);
+            CPRP.showUserProximityCreatePopUp(view,this, this);
             });
 
         getRemindersFromServer();
@@ -165,4 +165,8 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
         getRemindersFromServer();
     }
 
+    @Override
+    public void createDone() {
+        getRemindersFromServer();
+    }
 }

@@ -462,6 +462,12 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Intent intentService = new Intent(this, LocationService.class);
         startForegroundService(intentService);
+
+        SwitchMaterial locationSwitch = findViewById(R.id._locationSwtich);
+        SwitchMaterial backgroundSwitch = findViewById(R.id._backgroundSwitch);
+
+        backgroundSwitch.setChecked(hasBackgroundPermission());
+        locationSwitch.setChecked(hasGPSPermission());
     }
 
     @Override

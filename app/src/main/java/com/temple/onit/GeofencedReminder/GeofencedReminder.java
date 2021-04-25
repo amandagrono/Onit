@@ -37,7 +37,7 @@ public class GeofencedReminder extends Reminder {
             return false;
         }
         GeofencedReminder obj1 = (GeofencedReminder) obj;
-        if(obj1.getLatLng().equals(this.getLatLng()) && obj1.getReminderTitle().equals(this.getReminderTitle())){
+        if(obj1.getLatLng().equals(this.getLatLng())){
             return true;
         }
         return false;
