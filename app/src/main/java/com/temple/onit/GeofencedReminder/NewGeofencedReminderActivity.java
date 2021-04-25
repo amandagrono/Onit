@@ -69,7 +69,7 @@ public class NewGeofencedReminderActivity extends AppCompatActivity implements O
         radiusDesc.setText(String.valueOf(radius));
     }
     private double getRadius(int progress){
-        return (100 + (2* (double) progress + 1) * 100);
+        return (((double) progress + 1) * 100);
     }
 
     public static Intent newIntent(Context context, LatLng latLng, float zoom){

@@ -63,6 +63,8 @@ public class AlarmViewActivity extends AppCompatActivity implements OnMapReadyCa
                 " to get to your destination at " +
                 setTimeText(getIntent().getIntExtra(Constants.ARRIVAL_HOUR, 0), getIntent().getIntExtra(Constants.ARRIVAL_MINUTE, 0)) + ".";
 
+        alarmTextTextView.setText(alarmTextString);
+
         destinationLatitude = getIntent().getDoubleExtra(Constants.DESTINATION_LATITUDE, 0);
         destinationLongitude = getIntent().getDoubleExtra(Constants.DESTINATION_LONGITUDE, 0);
 
