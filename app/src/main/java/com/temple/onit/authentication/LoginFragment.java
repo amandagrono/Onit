@@ -28,6 +28,8 @@ import com.temple.onit.R;
 import com.temple.onit.databinding.FragmentLoginBinding;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 
 public class LoginFragment extends Fragment implements View.OnClickListener, AccountManager.AccountListener{
 
@@ -116,11 +118,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
         if (requestCode == SIGN_IN_CHANNEL){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try{
-                GoogleSignInAccount account = task.getResult(ApiException.class);
+                account = task.getResult(ApiException.class);
                 Log.d("GOOGLE", "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
+                Toast.makeText(requireContext(), "Sign in Failed", Toast.LENGTH_SHORT).show();
                 Log.w("GOOGLE", "Google sign in failed", e);
                 // ...
             }
@@ -162,7 +165,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
     public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         controller = Navigation.findNavController(view);
-        account = GoogleSignIn.getLastSignedInAccount(getActivity());
+        account = GoogleSignIn.getLastSignedInAccount(requireActivity());
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null){
             launchMain();
@@ -195,8 +198,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
     }
 
     public void onItLogin(){
-        OnitApplication.instance.accountManager = new AccountManager(getContext(), this);
-        OnitApplication.instance.getAccountManager().addUser(this, user.getUid(), PASSWORD , PASSWORD, getContext(), account.getEmail());
+        OnitApplication.instance.accountManager = new AccountManager(requireContext(), this);
+        Log.d("OnitLogin", String.valueOf(Objects.isNull(account)));
+        if(account == null){
+            OnitApplication.instance.getAccountManager().addUser(this, user.getUid(), PASSWORD, PASSWORD, getContext(), user.getEmail());
+        }
+        else{
+            OnitApplication.instance.getAccountManager().addUser(this, user.getUid(), PASSWORD , PASSWORD, getContext(), account.getEmail());
+        }
         Log.i("loginAccountManager", "account " + user.getUid() + " pass: " + PASSWORD);
     }
 
@@ -209,6 +218,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
     public void launchMain(){
 
         Intent intent = new Intent(getContext(), DashboardActivity.class);
+
+        // checking if there was a notification for a reminder request.
         if(requireActivity().getIntent().getExtras() != null){
             intent.putExtras(requireActivity().getIntent().getExtras());
         }
@@ -224,6 +235,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Acc
         } else {
             Toast.makeText(getContext(), "SERVER DOWN, TRY AGAIN LATER", Toast.LENGTH_SHORT);
         }
+    }
+
+    @Override
+    public void onLoginFailed(boolean loggedIn) {
+
     }
 
 }

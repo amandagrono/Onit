@@ -46,10 +46,6 @@ public class GeofenceReminderManager {
         return geofencePendingIntent;
     }
 
-
-
-
-
     public GeofenceReminderManager(Context context){
         this.context = context;
         sharedPreferences = context.getSharedPreferences("GeofenceReminders", Context.MODE_PRIVATE);
@@ -72,9 +68,14 @@ public class GeofenceReminderManager {
                         List<GeofencedReminder> tempList = getAll();
                         tempList.add(geofencedReminder);
                         saveAll(tempList);
-                        if(OnitApplication.instance.getAccountManager().loggedIn){
-                            addToServer(geofencedReminder);
+
+                        // had to add this if statement in order to do tests because account manager is not initialized
+                        if(OnitApplication.instance.getAccountManager() != null){
+                            if(OnitApplication.instance.getAccountManager().loggedIn){
+                                addToServer(geofencedReminder);
+                            }
                         }
+
                         activity.onSuccess();
 
 
@@ -120,9 +121,14 @@ public class GeofenceReminderManager {
                     Log.d("Failed to remove geofence", "Failed to remove geofence");
                     activity.onFailure(GeofenceErrors.getErrorString(context, e));
                 });
-        if(OnitApplication.instance.getAccountManager().loggedIn){
-            removeFromServer(geofencedReminder);
+
+        // had to add this if statement for unit tests
+        if(OnitApplication.instance.getAccountManager() != null){
+            if(OnitApplication.instance.getAccountManager().loggedIn){
+                removeFromServer(geofencedReminder);
+            }
         }
+
 
     }
     private void removeFromServer(GeofencedReminder reminder){

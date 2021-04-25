@@ -33,6 +33,8 @@ public class DashboardViewModel extends ViewModel {
     private MutableLiveData<ArrayList<ProximityReminder>> proximityCountLiveData = new MutableLiveData<ArrayList<ProximityReminder>>();
     private MutableLiveData<List<GeofencedReminder>>  geoCountLiveData = new MutableLiveData<>();
 
+    private UpdateCounts listener;
+
     public void setRepositoryContext(Application application){
         this.repository = new SmartAlarmRepository(application);
         this.geofenceReminderManager = new GeofenceReminderManager(application);
@@ -41,11 +43,16 @@ public class DashboardViewModel extends ViewModel {
 
     }
 
+    public void setListener(UpdateCounts listener){
+        this.listener = listener;
+    }
+
     public LiveData<List<SmartAlarm>> getAlarmCountLiveData() {
         return alarmCountLiveData;
     }
 
     public int getProximityCount() {
+        Log.d("GetProximityCount", "t");
         updateProximityCountLiveData();
         return (remindersList == null)? 0:remindersList.size();
     }
@@ -62,6 +69,7 @@ public class DashboardViewModel extends ViewModel {
     }
 
     private void updateProximityCountLiveData(){
+        Log.d("UpdateProximityCountLiveData","t");
         new ThreadFetchCount().execute(new Runnable() {
             @Override
             public void run() {
@@ -79,6 +87,7 @@ public class DashboardViewModel extends ViewModel {
         StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
             Log.d("ResponseUserReminder", response);
             convertResponseToList(response);
+
         }, error -> {
 
         });
@@ -88,7 +97,7 @@ public class DashboardViewModel extends ViewModel {
     private void convertResponseToList(String response){
         try{
             JSONArray jsonArray = new JSONArray(response);
-            Log.d("UserReminders", response);
+            //Log.d("UserReminders", response);
             for(int i = 0; i < jsonArray.length(); i++){
                 JSONObject object = jsonArray.getJSONObject(i);
                 int id = object.getInt("id");
@@ -101,6 +110,7 @@ public class DashboardViewModel extends ViewModel {
                 ProximityReminder reminder = new ProximityReminder(title, body, distance, issuer_id, target_id, id, accepted);
                 remindersList.add(reminder);
             }
+            listener.onFinishedUserReminders(remindersList.size());
         }
         catch (JSONException e){
             e.printStackTrace();
@@ -114,4 +124,8 @@ public class DashboardViewModel extends ViewModel {
         }
     }
 
+    public interface UpdateCounts{
+        public void onFinishedUserReminders(int count);
+        public void onFinishedGeoReminders(int count);
+    }
 }

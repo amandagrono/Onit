@@ -10,6 +10,8 @@ import android.location.Location;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -53,7 +55,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class DashboardActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface, View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+public class DashboardActivity extends AppCompatActivity implements AccountManager.AccountListener, GeofenceReminderManager.GeofenceManagerInterface, View.OnClickListener, CompoundButton.OnCheckedChangeListener, DashboardViewModel.UpdateCounts{
 
     private Button newAlarmButton;
     private Button newProximityReminderButton;
@@ -76,6 +78,7 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         setContentView(view);
 
         dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        dashboardViewModel.setListener(this);
 
         account = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -145,8 +148,11 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
             }
         });
 
-        Intent serviceIntent = new Intent(this, LocationService.class);
-        startForegroundService(serviceIntent);
+        if(hasGPSPermission()){
+            Intent intentService = new Intent(this, LocationService.class);
+            startForegroundService(intentService);
+        }
+
 
     }
 
@@ -187,10 +193,12 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
             countTextView.setText(String.valueOf(geofencedReminderArrayList.size()));
         }
 
-        int proximityReminderCount = dashboardViewModel.getProximityCount();
-        View root = activityDashboardBinding.buttonProximityReminder.getRootView();
-        TextView proximityCountTextView = root.findViewById(R.id._proximityCountTextView);
-        proximityCountTextView.setText(String.valueOf(proximityReminderCount));
+        dashboardViewModel.getProximityCount();
+        Log.d("OnResume", "t");
+        //int proximityReminderCount = dashboardViewModel.getProximityCount();
+        //View root = activityDashboardBinding.buttonProximityReminder.getRootView();
+        //TextView proximityCountTextView = root.findViewById(R.id._proximityCountTextView);
+        //proximityCountTextView.setText(String.valueOf(proximityReminderCount));
 
     }
 
@@ -220,55 +228,6 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
                 break;
         }
         return day;
-    }
-
-    private void changeToLogIn(){
-        loginButton.setText("Login");
-        loginButton.setOnClickListener(v->{
-            if(OnitApplication.instance.getAccountManager().loggedIn){
-                Toast.makeText(this, "Already Logged In!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            Context context = this;
-            LinearLayout layout = new LinearLayout(context);
-            layout.setOrientation(LinearLayout.VERTICAL);
-
-            final EditText username = new EditText(context);
-            username.setHint("Username");
-            layout.addView(username);
-
-            final EditText password = new EditText(context);
-            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            password.setHint("Password");
-            layout.addView(password);
-
-            AlertDialog dialog = new AlertDialog.Builder(context)
-                    .setTitle("Login")
-                    .setView(layout)
-                    .setPositiveButton("Enter", (dialog1, which) -> {
-                        if(username.getText().toString().equals("") || password.getText().toString().equals("")){
-                            Toast.makeText(context, "Please Enter A Username", Toast.LENGTH_SHORT).show();
-
-                        }
-                        else{
-                            OnitApplication.instance.getAccountManager().regularLogin(username.getText().toString(), password.getText().toString(), context);
-                        }
-
-                    })
-                    .setNegativeButton("Cancel", ((dialog1, which) ->{
-                        dialog1.cancel();
-                    }))
-                    .show();
-        });
-    }
-
-    private void changeToLogOut(){
-        loginButton.setText("Logout");
-        loginButton.setOnClickListener(v -> {
-            OnitApplication.instance.getAccountManager().logout(this);
-            changeToLogIn();
-
-        });
     }
 
     public void launchSmartAlarm(Intent intent){
@@ -371,9 +330,14 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     @Override
     public void onLoginResponse(boolean loggedIn) {
         if(loggedIn) {
-            changeToLogOut();
             getGeofenceRemindersFromServer();
+            dashboardViewModel.getProximityCount();
         }
+    }
+
+    @Override
+    public void onLoginFailed(boolean loggedIn) {
+
     }
 
     @Override
@@ -494,6 +458,13 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Intent intentService = new Intent(this, LocationService.class);
+        startForegroundService(intentService);
+    }
+
+    @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
         int id = compoundButton.getId();
         SwitchMaterial locationSwitch = findViewById(R.id._locationSwtich);
@@ -530,5 +501,19 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
         if (item.getItemId() == android.R.id.home) {
             activity.finish();
         }
+    }
+
+    @Override
+    public void onFinishedUserReminders(int count) {
+        //int proximityReminderCount = dashboardViewModel.getProximityCount();
+        Log.d("OnFinishedUserReminders", String.valueOf(count));
+        View root = activityDashboardBinding.buttonProximityReminder.getRootView();
+        TextView proximityCountTextView = root.findViewById(R.id._proximityCountTextView);
+        proximityCountTextView.setText(String.valueOf(count));
+    }
+
+    @Override
+    public void onFinishedGeoReminders(int count) {
+
     }
 }
