@@ -512,6 +512,7 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
     @Override
     public void onFinishedUserReminders(int count) {
         //int proximityReminderCount = dashboardViewModel.getProximityCount();
+
         Log.d("OnFinishedUserReminders", String.valueOf(count));
         View root = activityDashboardBinding.buttonProximityReminder.getRootView();
         TextView proximityCountTextView = root.findViewById(R.id._proximityCountTextView);
