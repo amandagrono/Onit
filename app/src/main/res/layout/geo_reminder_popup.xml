@@ -83,30 +83,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/geoEditTitle" />
 
             <TextView
-                android:id="@+id/geoEditLocation"
-                android:layout_width="206dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="68dp"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.2"
-                app:layout_constraintStart_toEndOf="@+id/popupGeoLocation"
-                app:layout_constraintTop_toBottomOf="@+id/geoEditDistance" />
-
-            <TextView
-                android:id="@+id/popupGeoLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="76dp"
-                android:text="@string/address"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/popupGeoDistance" />
-
-            <TextView
                 android:id="@+id/popupGeoBody"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -131,11 +107,11 @@
                 android:id="@+id/mapView"
                 android:layout_width="374dp"
                 android:layout_height="310dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="100dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.384"
+                app:layout_constraintHorizontal_bias="0.769"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/geoEditLocation" />
+                app:layout_constraintTop_toBottomOf="@+id/geoEditDistance" />
 
             <Button
                 android:id="@+id/editGeoSubmit"
@@ -163,8 +139,8 @@
                 android:id="@+id/geoEditDistance"
                 android:layout_width="171dp"
                 android:layout_height="31dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="64dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="48dp"
                 android:inputType="textPersonName"
                 android:text="Name"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -181,7 +157,7 @@
                 app:layout_constraintHorizontal_bias="0.514"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/geoEditDistance"
-                app:layout_constraintVertical_bias="0.226" />
+                app:layout_constraintVertical_bias="0.47" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -42,9 +42,9 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
     int height = LinearLayout.LayoutParams.MATCH_PARENT;
 
 
-    EditText editTitle,editBody; // display fields for user to edit
-    TextView editLocation,editDistance; // supposed to show address of marker
-    Button cancel,submit;
+    EditText editTitle, editBody; // display fields for user to edit
+    TextView editLocation, editDistance; // supposed to show address of marker
+    Button cancel, submit;
     ConstraintLayout editGeoBackground;
     PopupWindow geoWindow;
     Context context;
@@ -52,7 +52,7 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
     Geocoder geoCoder;
     SeekBar distanceChange;
 
-   // stuff for google map below
+    // stuff for google map below
     Bundle bundle;
     MapView mapView;
     Marker marker;
@@ -61,8 +61,8 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
     onSubmitEditGeoReminder interfaceImplementor;
     GeofencedReminder oldReminder;
 
-    public  void showGeoEditPopUp (View v, GeofencedReminder reminder, Context context, onSubmitEditGeoReminder listener){
-       // initialize things that class uses
+    public void showGeoEditPopUp(View v, GeofencedReminder reminder, Context context, onSubmitEditGeoReminder listener) {
+        // initialize things that class uses
         this.context = context;
         oldReminder = reminder;
         geoCoder = new Geocoder(context); // supposed to help get address of marker, not working
@@ -72,13 +72,13 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // inflate geo_reminder_popup layout
-        View geoPopUp = inflater.inflate(R.layout.geo_reminder_popup,null);
+        View geoPopUp = inflater.inflate(R.layout.geo_reminder_popup, null);
         // set size
         width = LinearLayout.LayoutParams.MATCH_PARENT;
         height = LinearLayout.LayoutParams.MATCH_PARENT;
         // create popup
-        geoWindow = new PopupWindow(geoPopUp,width,height, true); // true makes items outside popup inactive
-        geoWindow.showAtLocation(v, Gravity.CENTER,0,0);
+        geoWindow = new PopupWindow(geoPopUp, width, height, true); // true makes items outside popup inactive
+        geoWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
         // assign values to views in layout
         editTitle = geoPopUp.findViewById(R.id.geoEditTitle);
         editTitle.setText(reminder.getReminderTitle());
@@ -90,24 +90,23 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
         distanceChange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                double raduis = 100 + (2* (double) progress + 1) * 100;
+                double raduis = 100 + (2 * (double) progress + 1) * 100;
                 editDistance.setText(String.valueOf(raduis)); // display numeric value of seekbar
                 oldReminder.setRadius(raduis); // update radius
                 gMap.clear(); // clear old one
-                Utils.showReminderInMap(context,gMap,oldReminder); // show update
+                Utils.showReminderInMap(context, gMap, oldReminder); // show update
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                    // not conceded
+                // not conceded
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                    // not conceded
+                // not conceded
             }
         });
-        editLocation = geoPopUp.findViewById(R.id.geoEditLocation); // display address of marker
         editGeoBackground = geoPopUp.findViewById(R.id.editGeoBackground);
         editGeoBackground.setBackgroundColor(Color.parseColor("#BFCCCCCC")); //75% transparency ,Snow white
 
@@ -122,14 +121,14 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
         zoomOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               gMap.moveCamera(CameraUpdateFactory.zoomOut());
+                gMap.moveCamera(CameraUpdateFactory.zoomOut());
             }
         });
         cancel = geoPopUp.findViewById(R.id.editGeoCancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Title =",editTitle.getText().toString());
+                Log.d("Title =", editTitle.getText().toString());
                 geoWindow.dismiss();
             }
         });
@@ -139,7 +138,7 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitPressed(editTitle.getText().toString(),editBody.getText().toString(),editDistance.getText().toString()); // hardcoded values will be changed
+                submitPressed(editTitle.getText().toString(), editBody.getText().toString(), editDistance.getText().toString()); // hardcoded values will be changed
             }
         });
 
@@ -154,17 +153,18 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
 
     }
 
-    private  void submitPressed( String title, String body , String distance){
-        String postTitle= title,
-                postBody= body,
+    private void submitPressed(String title, String body, String distance) {
+        String postTitle = title,
+                postBody = body,
                 postDist = distance;
 
-        LatLng destination = new LatLng(oldReminder.getLatLng().latitude,oldReminder.getLatLng().longitude);
-        GeofencedReminder newReminder = new GeofencedReminder(destination,postTitle,postBody,Double.parseDouble(postDist));
-        interfaceImplementor.createProximityReminder(newReminder,oldReminder);
+        LatLng destination = new LatLng(oldReminder.getLatLng().latitude, oldReminder.getLatLng().longitude);
+        GeofencedReminder newReminder = new GeofencedReminder(destination, postTitle, postBody, Double.parseDouble(postDist));
+        interfaceImplementor.createProximityReminder(newReminder, oldReminder);
         geoWindow.dismiss();
 
     }
+
 /*
     // server post request to edit selected entry
     private void editGeoReminder( String title, String body , String distance, double Lat, double Long){
@@ -227,7 +227,7 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
 
 
         // get address of dropped marker from coordinates
-        getAddress();
+        //getAddress();
     }
 
     @Override
@@ -243,10 +243,10 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
         oldReminder.setLocation(latLng);
         Utils.showReminderInMap(context, gMap, oldReminder);
 
-        getAddress();
+        //getAddress();
 
     }
-
+/* // not working removed for time being as not fundermental
     public void getAddress(){
         try {
             List<Address> addresses = geoCoder.getFromLocation(oldReminder.getLatLng().latitude,oldReminder.getLatLng().longitude,1);
@@ -259,7 +259,7 @@ public class EditGeofencedPopup implements OnMapReadyCallback, GoogleMap.OnMapLo
             e.printStackTrace();
         }
     }
-
+*/
     public interface onSubmitEditGeoReminder{
         void createProximityReminder(GeofencedReminder newOneToSave, GeofencedReminder oldReminderToDelete);
     }

@@ -2,6 +2,7 @@ package com.temple.onit.Alarms.list;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.PluralsRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -15,6 +16,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.temple.onit.Alarms.EditSmartAlarmActivity;
 import com.temple.onit.Alarms.SmartAlarm;
 import com.temple.onit.Alarms.SmartAlarmActivity;
 import com.temple.onit.R;
@@ -53,7 +55,6 @@ public class AlarmListActivity extends AppCompatActivity implements OnToggleAlar
 
     }
 
-
     @Override
     public View onCreateView(@Nullable @org.jetbrains.annotations.Nullable View parent, @NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
 
@@ -79,5 +80,27 @@ public class AlarmListActivity extends AppCompatActivity implements OnToggleAlar
             alarm.cancel(getApplicationContext());
         }
         alarmViewModel.delete(alarm);
+    }
+
+    @Override
+    public void editThis(SmartAlarm alarm) {
+        Intent intent = new Intent(this, EditSmartAlarmActivity.class);
+        // pass old alarm details
+        Bundle args = new Bundle();
+        args.putString("title",alarm.getAlarmTitle());
+        args.putDouble("startLat",alarm.getStartingLatitude());
+        args.putDouble("startLong",alarm.getStartingLongitude());
+        args.putDouble("destLat",alarm.getDestinationLatitude());
+        args.putDouble("destLong",alarm.getDestinationLongitude());
+        args.putString("days",alarm.getDays());
+        args.putInt("startHour",alarm.getArrivalHour());
+        args.putInt("startMin",alarm.getArrivalMinute());
+        args.putLong("getReady",alarm.getGetReadyTime());
+        args.putInt("id",alarm.getAlarmId());
+        args.putLong("transitTime",alarm.getTransitTime());
+        intent.putExtra("args",args);
+        onDelete(alarm);// delete old intent
+        startActivity(intent);
+
     }
 }

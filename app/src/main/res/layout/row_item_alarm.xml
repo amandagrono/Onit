@@ -25,6 +25,13 @@
             android:textSize="24sp" />
 
         <ImageButton
+            android:id="@+id/edit_alarm_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".1"
+            app:srcCompat="@android:drawable/ic_menu_edit" />
+
+        <ImageButton
             android:id="@+id/alarm_list_delete_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
