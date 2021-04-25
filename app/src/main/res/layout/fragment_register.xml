@@ -5,7 +5,7 @@
                                                    android:layout_width="match_parent"
                                                    android:layout_height="match_parent"
                                                    tools:context=".authentication.RegisterFragment"
-                                                   android:background="@color/colorPrimaryDark"
+                                                   android:background="@color/background"
                                                    android:id="@+id/registerFragment">
     <com.google.android.material.textfield.TextInputLayout android:layout_width="288dp"
                                                            android:layout_height="75dp"
@@ -58,12 +58,12 @@
                                                        android:layout_marginBottom="239dp"
                                                        android:text="@string/Register_Button"/>
     <ImageView
-            android:src="@drawable/icons8_folder"
+            android:src="@drawable/task_alt_black_24dp"
             android:layout_width="95dp"
             android:layout_height="80dp" android:id="@+id/imageView"
             app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="155dp"
             android:layout_marginEnd="156dp" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="51dp"
-            app:srcCompat="@drawable/task_alt_black_24dp"/>
+            app:srcCompat="@drawable/task_alt_black_24dp" tools:srcCompat="@drawable/task_alt_black_24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

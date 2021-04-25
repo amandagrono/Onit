@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 
+import java.util.Arrays;
 import java.util.List;
 
 import kotlin.collections.CollectionsKt;
@@ -44,10 +45,6 @@ public class GeofenceReminderManager {
         geofencePendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return geofencePendingIntent;
     }
-
-
-
-
 
     public GeofenceReminderManager(Context context){
         this.context = context;
@@ -71,10 +68,16 @@ public class GeofenceReminderManager {
                         List<GeofencedReminder> tempList = getAll();
                         tempList.add(geofencedReminder);
                         saveAll(tempList);
-                        if(OnitApplication.instance.getAccountManager().loggedIn){
-                            addToServer(geofencedReminder);
+
+                        // had to add this if statement in order to do tests because account manager is not initialized
+                        if(OnitApplication.instance.getAccountManager() != null){
+                            if(OnitApplication.instance.getAccountManager().loggedIn){
+                                addToServer(geofencedReminder);
+                            }
                         }
+
                         activity.onSuccess();
+
 
                     })
                     .addOnFailureListener(e -> {
@@ -118,9 +121,14 @@ public class GeofenceReminderManager {
                     Log.d("Failed to remove geofence", "Failed to remove geofence");
                     activity.onFailure(GeofenceErrors.getErrorString(context, e));
                 });
-        if(OnitApplication.instance.getAccountManager().loggedIn){
-            removeFromServer(geofencedReminder);
+
+        // had to add this if statement for unit tests
+        if(OnitApplication.instance.getAccountManager() != null){
+            if(OnitApplication.instance.getAccountManager().loggedIn){
+                removeFromServer(geofencedReminder);
+            }
         }
+
 
     }
     private void removeFromServer(GeofencedReminder reminder){
@@ -138,6 +146,7 @@ public class GeofenceReminderManager {
 
     public List<GeofencedReminder> getAll(){
         if(sharedPreferences.contains("REMINDERS")){
+
             String gsonString = sharedPreferences.getString("REMINDERS", null);
             GeofencedReminder[] arrayOfReminders = gson.fromJson(gsonString, GeofencedReminder[].class);
             if(arrayOfReminders != null){
@@ -190,7 +199,7 @@ public class GeofenceReminderManager {
         public void onSuccess();
         public void onFailure(String error);
     }
-    interface RemoveReminderInterface{
+    public interface RemoveReminderInterface{
         public void onSuccess();
         public void onFailure(String error);
     }

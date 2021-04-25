@@ -21,14 +21,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.*;
-import com.temple.onit.MainActivity;
 import com.temple.onit.OnitApplication;
+import com.temple.onit.account.AccountManager;
+import com.temple.onit.dashboard.DashboardActivity;
 import com.temple.onit.R;
 import com.temple.onit.databinding.FragmentLoginBinding;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 
-public class LoginFragment extends Fragment implements View.OnClickListener{
+
+public class LoginFragment extends Fragment implements View.OnClickListener, AccountManager.AccountListener{
 
     private FragmentLoginBinding fragmentLoginBinding;
     private NavController controller;
@@ -70,7 +73,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                         if (task.isSuccessful()){
                             Log.i("google log in", "onComplete: successful log in");
                             user = mAuth.getCurrentUser();
-                            launchMain();
+                            onItLogin();
                         }else{
                             Toast.makeText(getContext(), "GOOGLE LOGIN INVALID", Toast.LENGTH_SHORT).show();
                         }
@@ -91,7 +94,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         user = mAuth.getCurrentUser();
-                        launchMain();
+                        onItLogin();
                     } else {
                         Toast.makeText(getContext(), "LOGIN INVALID", Toast.LENGTH_SHORT).show();
                     }
@@ -115,11 +118,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         if (requestCode == SIGN_IN_CHANNEL){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try{
-                GoogleSignInAccount account = task.getResult(ApiException.class);
+                account = task.getResult(ApiException.class);
                 Log.d("GOOGLE", "firebaseAuthWithGoogle:" + account.getId());
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
+                Toast.makeText(requireContext(), "Sign in Failed", Toast.LENGTH_SHORT).show();
                 Log.w("GOOGLE", "Google sign in failed", e);
                 // ...
             }
@@ -164,7 +168,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
 
         controller = Navigation.findNavController(view);
-        account = GoogleSignIn.getLastSignedInAccount(getActivity());
+        account = GoogleSignIn.getLastSignedInAccount(requireActivity());
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null){
             launchMain();
@@ -196,6 +200,18 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    public void onItLogin(){
+        OnitApplication.instance.accountManager = new AccountManager(requireContext(), this);
+        Log.d("OnitLogin", String.valueOf(Objects.isNull(account)));
+        if(account == null){
+            OnitApplication.instance.getAccountManager().addUser(this, user.getUid(), PASSWORD, PASSWORD, getContext(), user.getEmail());
+        }
+        else{
+            OnitApplication.instance.getAccountManager().addUser(this, user.getUid(), PASSWORD , PASSWORD, getContext(), account.getEmail());
+        }
+        Log.i("loginAccountManager", "account " + user.getUid() + " pass: " + PASSWORD);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -203,12 +219,30 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
     public void launchMain(){
-        Intent intent = new Intent(getContext(), MainActivity.class);
+
+        Intent intent = new Intent(getContext(), DashboardActivity.class);
+
+        // checking if there was a notification for a reminder request.
         if(requireActivity().getIntent().getExtras() != null){
             intent.putExtras(requireActivity().getIntent().getExtras());
         }
+
         startActivity(intent);
         requireActivity().finish();
+    }
+
+    @Override
+    public void onLoginResponse(boolean loggedIn) {
+        if (loggedIn) {
+            launchMain();
+        } else {
+            Toast.makeText(getContext(), "SERVER DOWN, TRY AGAIN LATER", Toast.LENGTH_SHORT);
+        }
+    }
+
+    @Override
+    public void onLoginFailed(boolean loggedIn) {
+
     }
 
 }

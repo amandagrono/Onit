@@ -1,7 +1,9 @@
 package com.temple.onit.GeofencedReminder;
 
+import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -31,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.Utils;
+import com.temple.onit.dashboard.DashboardActivity;
 
 public class GeofencedReminderActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GeofenceReminderManager.RemoveReminderInterface , GeofenceReminderManager.GeofenceManagerInterface, EditGeofencedPopup.onSubmitEditGeoReminder{
 
@@ -82,6 +85,18 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
         }
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        DashboardActivity.finishActivity(item, this);
+        return true;
+
+
     }
 
     @Override

@@ -1,10 +1,16 @@
 package com.temple.onit;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -21,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.temple.onit.services.LocationService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,7 +58,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         fragment.setArguments(args);
         return fragment;
     }
-    public static MapFragment newInstance(int state){
+
+    public static MapFragment newInstance(int state) {
         MapFragment fragment = new MapFragment();
         Bundle args = new Bundle();
         args.putInt("state", state);
@@ -62,9 +70,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
+        if (getArguments() != null) {
             state = getArguments().getInt("state");
-            switch (state){
+            switch (state) {
                 case 0:
                     textViewText = "Please Select Destination Location";
                     break;
@@ -74,11 +82,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 case 2:
                     textViewText = "Please select reminder location";
             }
-            if(getArguments().getParcelable("latlng") != null){
+            if (getArguments().getParcelable("latlng") != null) {
                 this.currentLatLng = (LatLng) getArguments().getParcelable("latlng");
             }
         }
-
 
 
     }
@@ -94,15 +101,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(getActivity() != null){
+        if (getActivity() != null) {
 
             SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
             button = view.findViewById(R.id.save_alarm_button);
-            if(mapFragment != null) {
+            if (mapFragment != null) {
                 mapFragment.getMapAsync(this);
             }
             button.setOnClickListener(v -> {
-                if(!(currentLatLng == null)){
+                if (!(currentLatLng == null)) {
                     parentActivity.saveLocation(currentLatLng, state);
                 }
             });
@@ -114,10 +121,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if(context instanceof MapFragmentInterface){
+        if (context instanceof MapFragmentInterface) {
             parentActivity = (MapFragmentInterface) context;
-        }
-        else{
+        } else {
             throw new ClassCastException("Must Implement MapFragmentInterface");
         }
     }
@@ -126,6 +132,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mapAPI = googleMap;
         LatLng temple = new LatLng(39.981142, -75.156161);
+
+        LocationManager manager = requireContext().getSystemService(LocationManager.class);
+        if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(location != null){
+                currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+            }
+
+        }
+
 
         if(currentLatLng == null){
             currentLatLng = temple;

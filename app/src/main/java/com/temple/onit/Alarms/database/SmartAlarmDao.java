@@ -31,4 +31,7 @@ public interface SmartAlarmDao {
     @Delete
     void delete(SmartAlarm alarm);
 
+    @Query("SELECT COUNT('alarmId') FROM alarm_table")
+    int getAlarmSize();
+
 }

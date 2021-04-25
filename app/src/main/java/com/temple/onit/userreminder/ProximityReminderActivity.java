@@ -1,5 +1,8 @@
 package com.temple.onit.userreminder;
 
+import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +20,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
+
 import com.temple.onit.account.AccountManager;
+
+import com.temple.onit.dashboard.DashboardActivity;
+
 import com.temple.onit.dataclasses.ProximityReminder;
 
 import org.json.JSONArray;
@@ -65,6 +72,17 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
 
         });
         requestQueue.add(request);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        DashboardActivity.finishActivity(item, this);
+        return true;
+
     }
 
     private void convertResponseToList(String response){

@@ -1,5 +1,8 @@
 package com.temple.onit.GeofencedReminder;
 
+import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -30,6 +33,7 @@ import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 import com.temple.onit.Utils;
+import com.temple.onit.dashboard.DashboardActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,7 +78,7 @@ public class NewGeofencedReminderActivity extends AppCompatActivity implements O
         radiusDesc.setText(String.valueOf(radius));
     }
     private double getRadius(int progress){
-        return (100 + (2* (double) progress + 1) * 100);
+        return (((double) progress + 1) * 100);
     }
 
     public static Intent newIntent(Context context, LatLng latLng, float zoom){
@@ -111,6 +115,17 @@ public class NewGeofencedReminderActivity extends AppCompatActivity implements O
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        DashboardActivity.finishActivity(item, this);
+        return true;
 
     }
 

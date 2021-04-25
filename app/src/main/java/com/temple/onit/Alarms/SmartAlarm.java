@@ -17,7 +17,9 @@ import androidx.room.PrimaryKey;
 
 import com.temple.onit.Constants;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
@@ -144,54 +146,69 @@ public class SmartAlarm{
     }
 
 
+
+
     public boolean isStarted(){
         return started;
     }
 
-    private int getLeaveHour(){
-        long arrivalTimeInMillis = (arrivalHour*Constants.HOUR_IN_MILLIS) + (arrivalMinute*Constants.MINUTE_IN_MILLIS);
-        long timeToLeave = arrivalTimeInMillis-transitTime;
-        return (int) (timeToLeave/(Constants.HOUR_IN_MILLIS));
-    }
-    private int getLeaveMinute(){
-        long arrivalTimeInMillis = (arrivalHour*Constants.HOUR_IN_MILLIS) + (arrivalMinute*Constants.MINUTE_IN_MILLIS);
-        long timeToLeave = arrivalTimeInMillis-transitTime;
-        return (int) (timeToLeave%(Constants.HOUR_IN_MILLIS))/Constants.MINUTE_IN_MILLIS;
-    }
 
-    private Calendar setWakeupTime(){
-        long arrivalTimeInMillis = (arrivalHour*Constants.HOUR_IN_MILLIS) + (arrivalMinute*Constants.MINUTE_IN_MILLIS);
-        long timeToLeave = arrivalTimeInMillis-transitTime;
-        long timeToWakeUp = timeToLeave - getReadyTime;
-
-        int wakeupHour = (int) (timeToWakeUp/(Constants.HOUR_IN_MILLIS));
-        int wakeupMinute = (int) (timeToWakeUp%(Constants.HOUR_IN_MILLIS))/Constants.MINUTE_IN_MILLIS;
-
+    public static int[] setDayArray(){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, wakeupHour);
-        calendar.set(Calendar.MINUTE, wakeupMinute);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        int today = calendar.get(Calendar.DAY_OF_WEEK);
+        int[] returnArray = new int[7];
+        returnArray[0] = today - 1;
+        calendar.set(Calendar.DAY_OF_WEEK, today + 1);
+        returnArray[1] = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.set(Calendar.DAY_OF_WEEK, today + 2);
+        returnArray[2] = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.set(Calendar.DAY_OF_WEEK, today + 3);
+        returnArray[3] = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.set(Calendar.DAY_OF_WEEK, today + 4);
+        returnArray[4] = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.set(Calendar.DAY_OF_WEEK, today + 5);
+        returnArray[5] = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        calendar.set(Calendar.DAY_OF_WEEK, today + 6);
+        returnArray[6] = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        Log.d("SetDayArray", Arrays.toString(returnArray));
+        return returnArray;
+    }
 
-        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-            calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
+    public String getDaysPreview(){
+
+        int[] upcomingDays = setDayArray();
+
+
+        String return_string = "";
+        if (days != null){
+            for (int i = 0; i < upcomingDays.length; i++){
+                Log.i("value", "charAt: " + days.charAt(i));
+                if (days.charAt(upcomingDays[i]) == '1'){
+                    switch (upcomingDays[i]){
+                        case 1:
+                            return "Monday";
+                        case 2:
+                            return "Tuesday";
+                        case 3:
+                            return "Wednesday";
+                        case 4:
+                            return "Thursday";
+                        case 5:
+                            return "Friday";
+
+                        case 6:
+                            return "Saturday";
+
+                        case 0:
+                            return "Sunday";
+                    }
+                }
+            }
         }
-        return calendar;
-
+        Log.i("return string", "return string: " + return_string);
+        return return_string;
     }
-    private String getDaysEnabled(){
-        String returnString = "";
-        if(enabledOnDay(0)) returnString = returnString + "Sunday, ";
-        if(enabledOnDay(1)) returnString = returnString + "Monday, ";
-        if(enabledOnDay(2)) returnString = returnString + "Tuesday, ";
-        if(enabledOnDay(3)) returnString = returnString + "Wednesday, ";
-        if(enabledOnDay(4)) returnString = returnString + "Thursday, ";
-        if(enabledOnDay(5)) returnString = returnString + "Friday, ";
-        if(enabledOnDay(6)) returnString = returnString + "Saturday, ";
 
-        return returnString.substring(0, returnString.length() - 2);
-    }
 
     public boolean enabledOnDay(int day){
         return days.charAt(day) == '1';
@@ -266,10 +283,11 @@ public class SmartAlarm{
 
     }
 
-    private int millisToHours(long millis){
+    public int millisToHours(long millis){
         return (int) (millis/Constants.HOUR_IN_MILLIS);
     }
-    private int millisToMinutes(long millis){
+
+    public int millisToMinutes(long millis){
         millis = millis%Constants.HOUR_IN_MILLIS;
         return (int) millis/Constants.MINUTE_IN_MILLIS;
     }
