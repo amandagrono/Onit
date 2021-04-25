@@ -13,14 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.temple.onit.MainActivity;
+import com.temple.onit.dashboard.DashboardActivity;
 import com.temple.onit.R;
 import com.temple.onit.databinding.FragmentRegisterBinding;
 
@@ -182,7 +181,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 
 
     public void launchMain(){
-        Intent intent = new Intent(getContext(), MainActivity.class);
+        Intent intent = new Intent(getContext(), DashboardActivity.class);
         startActivity(intent);
     }
 }

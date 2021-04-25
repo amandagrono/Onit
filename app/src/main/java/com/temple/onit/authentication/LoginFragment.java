@@ -21,14 +21,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.*;
-import com.temple.onit.MainActivity;
 import com.temple.onit.OnitApplication;
+import com.temple.onit.account.AccountManager;
+import com.temple.onit.dashboard.DashboardActivity;
 import com.temple.onit.R;
 import com.temple.onit.databinding.FragmentLoginBinding;
 import org.jetbrains.annotations.NotNull;
 
 
-public class LoginFragment extends Fragment implements View.OnClickListener{
+public class LoginFragment extends Fragment implements View.OnClickListener, AccountManager.AccountListener{
 
     private FragmentLoginBinding fragmentLoginBinding;
     private NavController controller;
@@ -70,7 +71,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                         if (task.isSuccessful()){
                             Log.i("google log in", "onComplete: successful log in");
                             user = mAuth.getCurrentUser();
-                            launchMain();
+                            onItLogin();
                         }else{
                             Toast.makeText(getContext(), "GOOGLE LOGIN INVALID", Toast.LENGTH_SHORT).show();
                         }
@@ -91,7 +92,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         user = mAuth.getCurrentUser();
-                        launchMain();
+                        onItLogin();
                     } else {
                         Toast.makeText(getContext(), "LOGIN INVALID", Toast.LENGTH_SHORT).show();
                     }
@@ -193,6 +194,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    public void onItLogin(){
+        OnitApplication.instance.accountManager = new AccountManager(getContext(), this);
+        OnitApplication.instance.getAccountManager().addUser(this, user.getUid(), PASSWORD , PASSWORD, getContext(), account.getEmail());
+        Log.i("loginAccountManager", "account " + user.getUid() + " pass: " + PASSWORD);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -200,12 +207,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
 
     public void launchMain(){
-        Intent intent = new Intent(getContext(), MainActivity.class);
+
+        Intent intent = new Intent(getContext(), DashboardActivity.class);
         if(requireActivity().getIntent().getExtras() != null){
             intent.putExtras(requireActivity().getIntent().getExtras());
         }
+
         startActivity(intent);
         requireActivity().finish();
+    }
+
+    @Override
+    public void onLoginResponse(boolean loggedIn) {
+        if (loggedIn) {
+            launchMain();
+        } else {
+            Toast.makeText(getContext(), "SERVER DOWN, TRY AGAIN LATER", Toast.LENGTH_SHORT);
+        }
     }
 
 }

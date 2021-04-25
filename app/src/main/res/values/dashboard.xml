@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_prompt">SETTINGS</string>
+    <string name="alarm_prompt">ALARMS</string>
+    <string name="geo_prompt">GEO REMINDERS</string>
+    <string name="proximity_prompt">PROXIMITY REMINDERS</string>
+    <string name="dash_total">TOTAL</string>
+    <string name="dash_count">0</string>
+    <string name="blank"></string>
+    <string name="nearest_reminder">GEO-REMINDER PREVIEW:</string>
+    <string name="hello_user_prompt">Hello</string>
+    <string name="dashboard_text">YOUR DASHBOARD</string>
+    <string name="prompt_location">LOCATION</string>
+    <string name="prompt_service">BACKGROUND SERVICE</string>
+    <string name="prompt_logout">SIGN OUT</string>
+    <string name="logout_alert">Are you sure you want to logout? doing so will remove all of your alarms</string>
+    <string name="logout_confirm">Confirm</string>
+    <string name="logout_cancel">Cancel</string>
+    <string name="alarm_label">ALARM PREVIEW:</string>
+    <string name="no_alarms">No Alarms Currently Set</string>
+    <string name="no_geo">No GeoReminders Currently Set</string>
+    
+    <!-- COLORS -->
+    <color name="background">#756B6B</color>
+    <color name="lightOff">#E4DBDB</color>
+    <color name="darkOff">#F37F7F</color>
+    <color name="medOff">#F4AEAE</color>
+</resources>

@@ -72,22 +72,43 @@ public class SmartAlarmViewHolder extends RecyclerView.ViewHolder{
         });
 
     }
-    private String getArrivalTimeText(SmartAlarm alarm){
-        StringBuilder returnString = new StringBuilder("Arrival Hour: ");
-        if(alarm.getArrivalHour() < 10){
+
+    public static String getArrivalTimeText(SmartAlarm alarm){
+        StringBuilder returnString = new StringBuilder("Alarm Time: ");
+        boolean am_pm = false;
+        /*if(alarm.getArrivalHour() < 10){
             returnString.append("0").append(alarm.getArrivalHour());
         }
         else{
             returnString.append(alarm.getArrivalHour());
+        }*/
+        if (alarm.getArrivalHour() > 12){
+            returnString.append(alarm.getArrivalHour() - 12);
+
+            am_pm = true;
+        } else{
+            if (alarm.getArrivalHour() == 0){
+                returnString.append(12);
+            }else {
+                returnString.append(alarm.getArrivalHour());
+            }
+            am_pm = alarm.getArrivalHour() == 12;
+
         }
 
         returnString.append(":");
 
         if(alarm.getArrivalMinute() < 10){
-            returnString.append(":").append(alarm.getArrivalMinute());
+            returnString.append("0").append(alarm.getArrivalMinute());
         }
         else{
             returnString.append(alarm.getArrivalMinute());
+        }
+
+        if (am_pm){
+            returnString.append(" pm");
+        }else{
+            returnString.append(" am");
         }
         Log.d("View Holder", returnString.toString());
         return returnString.toString();

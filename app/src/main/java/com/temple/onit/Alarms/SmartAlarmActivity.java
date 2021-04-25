@@ -1,5 +1,8 @@
 package com.temple.onit.Alarms;
 
+import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,6 +35,7 @@ import com.temple.onit.Constants;
 import com.temple.onit.MapFragment;
 import com.temple.onit.R;
 import com.temple.onit.ServerManager;
+import com.temple.onit.dashboard.DashboardActivity;
 
 import java.util.Calendar;
 import java.util.Random;
@@ -126,7 +130,19 @@ public class SmartAlarmActivity extends AppCompatActivity implements MapFragment
 
         });
 
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+        DashboardActivity.finishActivity(item, this);
+        return true;
+
+    }
+
     private void loadArrays(){
         for(int i = 0; i < 24; i++){
             hoursArray[i] = String.valueOf(i);

@@ -144,6 +144,8 @@ public class SmartAlarm{
     }
 
 
+
+
     public boolean isStarted(){
         return started;
     }
@@ -179,6 +181,43 @@ public class SmartAlarm{
         }
         return calendar;
 
+    }
+
+    public String getDaysPreview(){
+
+        String return_string = "";
+        if (days != null){
+            for (int i = 0; i<= days.length()-1; i++){
+                Log.i("value", "charAt: " + days.charAt(i));
+                if (days.charAt(i) == '1'){
+                    switch (i){
+                        case 1:
+                            return_string ="Monday";
+                            break;
+                        case 2:
+                            return_string ="Tuesday";
+                            break;
+                        case 3:
+                            return_string ="Wednesday";
+                            break;
+                        case 4:
+                            return_string ="Thursday";
+                            break;
+                        case 5:
+                            return_string = "Friday";
+                            break;
+                        case 6:
+                            return_string ="Saturday";
+                            break;
+                        case 0:
+                            return_string ="Sunday";
+                            break;
+                    }
+                }
+            }
+        }
+        Log.i("return string", "return string: " + return_string);
+        return return_string;
     }
     private String getDaysEnabled(){
         String returnString = "";

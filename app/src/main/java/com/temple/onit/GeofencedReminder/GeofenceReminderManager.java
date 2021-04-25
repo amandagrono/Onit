@@ -77,6 +77,7 @@ public class GeofenceReminderManager {
                         }
                         activity.onSuccess();
 
+
                     })
                     .addOnFailureListener(e -> {
                         e.printStackTrace();
@@ -192,7 +193,7 @@ public class GeofenceReminderManager {
         public void onSuccess();
         public void onFailure(String error);
     }
-    interface RemoveReminderInterface{
+    public interface RemoveReminderInterface{
         public void onSuccess();
         public void onFailure(String error);
     }
