@@ -86,8 +86,9 @@ public class GeofencedReminderActivity extends AppCompatActivity implements OnMa
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 330);
         }
         ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.hide();
+        }
     }
 
     @Override

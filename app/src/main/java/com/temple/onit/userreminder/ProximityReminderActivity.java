@@ -57,7 +57,10 @@ public class ProximityReminderActivity extends AppCompatActivity implements Prox
 
         getRemindersFromServer();
 
-
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
     }
 
     private void getRemindersFromServer(){

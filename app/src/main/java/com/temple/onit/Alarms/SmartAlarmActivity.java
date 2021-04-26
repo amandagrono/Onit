@@ -98,6 +98,10 @@ public class SmartAlarmActivity extends AppCompatActivity implements MapFragment
         createAlarmViewModel = ViewModelProviders.of(this).get(CreateAlarmViewModel.class);
 
         loadArrays();
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         numberPickerHours.setDisplayedValues(hoursArray);
         numberPickerMinutes.setDisplayedValues(minutesArray);
@@ -130,9 +134,7 @@ public class SmartAlarmActivity extends AppCompatActivity implements MapFragment
 
         });
 
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+
     }
 
     @Override

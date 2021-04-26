@@ -76,7 +76,7 @@ public class AlarmViewActivity extends AppCompatActivity implements OnMapReadyCa
         }
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.hide();
     }
 
     @Override

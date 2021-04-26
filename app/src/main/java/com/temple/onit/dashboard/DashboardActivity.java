@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -152,7 +153,10 @@ public class DashboardActivity extends AppCompatActivity implements AccountManag
             Intent intentService = new Intent(this, LocationService.class);
             startForegroundService(intentService);
         }
-
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
     }
 

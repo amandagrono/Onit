@@ -1,6 +1,8 @@
 package com.temple.onit.authentication;
 
 import android.view.View;
+
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.navigation.NavController;
@@ -28,6 +30,8 @@ public class AuthenticationActivity extends AppCompatActivity {
         controller = navHostFragment.getNavController();
         config = new AppBarConfiguration.Builder(controller.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, controller, config);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
     }
 

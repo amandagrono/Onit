@@ -117,8 +117,7 @@ public class NewGeofencedReminderActivity extends AppCompatActivity implements O
 
 
         ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.hide();
     }
 
     @Override

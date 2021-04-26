@@ -150,12 +150,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/distanceCheck"
-                android:layout_width="247dp"
+                android:layout_width="180dp"
                 android:layout_height="95dp"
                 android:layout_marginTop="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/textView8"
                 app:layout_constraintTop_toBottomOf="@+id/geoDistanceCheck"
                 tools:ignore="MissingConstraints">
 
@@ -166,7 +166,8 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginEnd="0dp"
                     android:ems="10"
-                    android:inputType="textPersonName" />
+                    android:digits="0123456789"
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

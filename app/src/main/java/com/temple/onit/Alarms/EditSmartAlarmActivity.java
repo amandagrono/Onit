@@ -1,5 +1,6 @@
 package com.temple.onit.Alarms;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -80,7 +81,10 @@ public class EditSmartAlarmActivity extends AppCompatActivity implements MapFrag
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_smart_alarm);
-
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.hide();
+            }
             if (getIntent().getBundleExtra("args") == null) {
                 finish();
             }else { // get old smart alrm details to be be displayed

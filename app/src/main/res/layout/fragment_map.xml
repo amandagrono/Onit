@@ -12,15 +12,7 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <EditText
-        android:inputType="text"
-        android:autofillHints="Enter Location"
-        android:hint="@string/enter_location"
-        android:id="@+id/mapEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-    </EditText>
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
