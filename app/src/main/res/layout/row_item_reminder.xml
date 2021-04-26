@@ -26,19 +26,22 @@
 
     <ImageButton
         android:id="@+id/accept_reminder_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight=".1"
+        android:layout_width="61dp"
+        android:layout_height="55dp"
         android:scaleType="center"
         android:src="@android:drawable/ic_input_add"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/other_user_tv"
+        app:layout_constraintTop_toBottomOf="@id/delete_reminder_button"
+        android:contentDescription="Accept Reminder" />
 
     <ImageButton
         android:id="@+id/delete_reminder_button"
         android:layout_width="61dp"
         android:layout_height="55dp"
         android:layout_weight=".1"
-        android:contentDescription="Delete"
+        android:contentDescription="Delete Reminder"
         android:scaleType="center"
 
         android:src="@android:drawable/ic_delete"
@@ -54,6 +57,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/other_user_tv"
         app:layout_constraintTop_toBottomOf="@+id/delete_reminder_button"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        android:contentDescription="Edit Reminder" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

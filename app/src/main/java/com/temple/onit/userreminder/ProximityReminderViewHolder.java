@@ -66,11 +66,17 @@ public class ProximityReminderViewHolder extends RecyclerView.ViewHolder{
         deleteButton.setOnClickListener(v -> {
             listListener.onDelete(reminder);
         });
-        if(OnitApplication.instance.getAccountManager().username.equals(reminder.getTarget()) && !reminder.isAccepted()){
-            acceptButton.setVisibility(View.VISIBLE);
-            acceptButton.setOnClickListener(v ->{
-                listListener.onAccept(reminder);
-            });
+
+        if(OnitApplication.instance.getAccountManager().username.equals(reminder.getTarget())){
+            editUserReminderButton.setVisibility(View.GONE);
+            if(!reminder.isAccepted()){
+                Log.d("Reminder", "Reminder not accepted");
+                acceptButton.setVisibility(View.VISIBLE);
+                acceptButton.setOnClickListener(v ->{
+                    listListener.onAccept(reminder);
+                });
+            }
+
         }
 
         editUserReminderButton = itemView.findViewById(R.id.editProximityReminderButton);
