@@ -23,12 +23,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.temple.onit.Constants;
 import com.temple.onit.OnitApplication;
 import com.temple.onit.R;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class CreateProximityReminderPopup {
@@ -80,7 +82,12 @@ public class CreateProximityReminderPopup {
                     if(!createTarget.getText().toString().contains("@") || !createTarget.getText().toString().endsWith(".com")){
                         targetCheck.setError("Please enter target user E-mail");
                         targetIssue= true;
-                    } else {
+                    }
+                    else if(createTarget.getText().toString().equals(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail())){
+                        targetCheck.setError("Cannot send a reminder to yourself");
+                        targetIssue = true;
+                    }
+                    else {
                         targetCheck.setError(null);
                         targetIssue = false;
                     }
@@ -105,11 +112,14 @@ public class CreateProximityReminderPopup {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         if(!TextUtils.isDigitsOnly(createDistance.getText().toString()) || createDistance.getText().toString().length() ==0 ){ // if distance entered isn't a number
                             distanceCheck.setError("Distance must be a number");
+                            distanceIssue = true;
 
                         } else if (Integer.valueOf(createDistance.getText().toString()) > maxTriggerDistance ||Integer.valueOf(createDistance.getText().toString()) < minTriggerDistance  ){
                             distanceCheck.setError("Trigger Distance: Max = 300 meters, Min = 50 meters");
+                            distanceIssue = true;
                         } else {
                             distanceCheck.setError(null);
+                            distanceIssue = false;
                         }
 
             }
@@ -123,7 +133,13 @@ public class CreateProximityReminderPopup {
 
         submit = createProximityPopup.findViewById(R.id.createProxSubmit);
         submit.setOnClickListener(view -> {
-            addUserReminder(createTitle.getText().toString(),createBody.getText().toString(),createDistance.getText().toString(),createTarget.getText().toString());
+            if(!targetIssue && !distanceIssue){
+                addUserReminder(createTitle.getText().toString(),createBody.getText().toString(),createDistance.getText().toString(),createTarget.getText().toString());
+            }
+            else{
+                Toast.makeText(context, "Please fix input issues", Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         cancel = createProximityPopup.findViewById(R.id.createProxCancel);

@@ -97,7 +97,7 @@ public class DashboardViewModel extends ViewModel {
     private void convertResponseToList(String response){
         try{
             JSONArray jsonArray = new JSONArray(response);
-            //Log.d("UserReminders", response);
+            Log.d("UserReminders", response);
             for(int i = 0; i < jsonArray.length(); i++){
                 JSONObject object = jsonArray.getJSONObject(i);
                 int id = object.getInt("id");
@@ -110,7 +110,13 @@ public class DashboardViewModel extends ViewModel {
                 ProximityReminder reminder = new ProximityReminder(title, body, distance, issuer_id, target_id, id, accepted);
                 remindersList.add(reminder);
             }
-            listener.onFinishedUserReminders(remindersList.size());
+            if(remindersList.size() == 0){
+                listener.onFinishedUserReminders(0);
+            }
+            else{
+                listener.onFinishedUserReminders(remindersList.size());
+            }
+
         }
         catch (JSONException e){
             e.printStackTrace();
